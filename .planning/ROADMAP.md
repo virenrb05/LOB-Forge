@@ -46,7 +46,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
   4. Data integrity checks pass (no NaNs, monotonic timestamps, positive prices/sizes)
 **Research**: Likely (external API — Bybit WebSocket specifics)
 **Research topics**: Bybit WebSocket API endpoints, rate limits, snapshot vs delta format, historical data archives
-**Plans**: TBD
+**Plans**: 3 (02-01, 02-02, 02-03)
 
 ### Phase 3: Data Preprocessing
 **Goal**: Raw LOB snapshots become model-ready tensors with features, labels, and temporal splits
@@ -160,7 +160,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Scaffold | 2/2 | Complete | 2026-03-19 |
-| 2. Data Ingestion | 0/TBD | Not started | - |
+| 2. Data Ingestion | 1/3 | In progress | - |
 | 3. Data Preprocessing | 0/TBD | Not started | - |
 | 4. Predictor Architecture | 0/TBD | Not started | - |
 | 5. Predictor Training | 0/TBD | Not started | - |
