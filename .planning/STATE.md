@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 2 of 10 (Data Ingestion)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-03-19 — Completed 02-01-PLAN.md
+Last activity: 2026-03-19 — Completed 02-03-PLAN.md
 
-Progress: █████░░░░░ 23%
+Progress: ██████░░░░ 31%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: ~4 min
-- Total execution time: ~12 min
+- Total execution time: ~15 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-scaffold | 2/2 | ~10 min | ~5 min |
-| 02-data-ingestion | 1/3 | ~2 min | ~2 min |
+| 02-data-ingestion | 2/3 | ~5 min | ~2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01, 01-02, 02-01
+- Last 5 plans: 01-01, 01-02, 02-01, 02-03
 - Trend: Accelerating
 
 ## Accumulated Context
@@ -47,6 +47,8 @@ Recent decisions affecting current work:
 - LOB schema has 46 columns (not 45): plan enumeration yields 3 header + 40 book + 3 trade = 46
 - Trade columns (trade_price, trade_size) allow NaN; book columns do not
 - Validation returns list[str] of issues rather than raising exceptions
+- LOBSTER prices divided by 10000 (stored as integer cents x 100)
+- Trade events from LOBSTER message file: event_types 4, 5 are executions
 
 ### Pending Todos
 
@@ -59,5 +61,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: Completed 02-01-PLAN.md
-Resume file: .planning/phases/02-data-ingestion/02-01-SUMMARY.md
+Stopped at: Completed 02-03-PLAN.md
+Resume file: .planning/phases/02-data-ingestion/02-03-SUMMARY.md
