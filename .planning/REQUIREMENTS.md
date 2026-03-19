@@ -117,59 +117,59 @@ Which phases cover which requirements. Updated by create-roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | — | Pending |
-| DATA-02 | — | Pending |
-| DATA-03 | — | Pending |
-| DATA-04 | — | Pending |
-| DATA-05 | — | Pending |
-| DATA-06 | — | Pending |
-| DATA-07 | — | Pending |
-| DATA-08 | — | Pending |
-| DATA-09 | — | Pending |
-| DATA-10 | — | Pending |
-| DATA-11 | — | Pending |
-| PRED-01 | — | Pending |
-| PRED-02 | — | Pending |
-| PRED-03 | — | Pending |
-| PRED-04 | — | Pending |
-| PRED-05 | — | Pending |
-| PRED-06 | — | Pending |
-| PRED-07 | — | Pending |
-| PRED-08 | — | Pending |
-| PRED-09 | — | Pending |
-| PRED-10 | — | Pending |
-| GEN-01 | — | Pending |
-| GEN-02 | — | Pending |
-| GEN-03 | — | Pending |
-| GEN-04 | — | Pending |
-| GEN-05 | — | Pending |
-| GEN-06 | — | Pending |
-| GEN-07 | — | Pending |
-| GEN-08 | — | Pending |
-| EXEC-01 | — | Pending |
-| EXEC-02 | — | Pending |
-| EXEC-03 | — | Pending |
-| EXEC-04 | — | Pending |
-| EXEC-05 | — | Pending |
-| EXEC-06 | — | Pending |
-| EXEC-07 | — | Pending |
-| EXEC-08 | — | Pending |
-| EXEC-09 | — | Pending |
-| EVAL-01 | — | Pending |
-| EVAL-02 | — | Pending |
-| EVAL-03 | — | Pending |
-| EVAL-04 | — | Pending |
-| EVAL-05 | — | Pending |
-| EVAL-06 | — | Pending |
-| EVAL-07 | — | Pending |
-| EVAL-08 | — | Pending |
-| EVAL-09 | — | Pending |
+| DATA-01 | Phase 2 | Pending |
+| DATA-02 | Phase 2 | Pending |
+| DATA-03 | Phase 2 | Pending |
+| DATA-04 | Phase 3 | Pending |
+| DATA-05 | Phase 3 | Pending |
+| DATA-06 | Phase 3 | Pending |
+| DATA-07 | Phase 3 | Pending |
+| DATA-08 | Phase 3 | Pending |
+| DATA-09 | Phase 3 | Pending |
+| DATA-10 | Phase 3 | Pending |
+| DATA-11 | Phase 3 | Pending |
+| PRED-01 | Phase 4 | Pending |
+| PRED-02 | Phase 4 | Pending |
+| PRED-03 | Phase 4 | Pending |
+| PRED-04 | Phase 4 | Pending |
+| PRED-05 | Phase 5 | Pending |
+| PRED-06 | Phase 5 | Pending |
+| PRED-07 | Phase 5 | Pending |
+| PRED-08 | Phase 5 | Pending |
+| PRED-09 | Phase 5 | Pending |
+| PRED-10 | Phase 4 | Pending |
+| GEN-01 | Phase 6 | Pending |
+| GEN-02 | Phase 6 | Pending |
+| GEN-03 | Phase 6 | Pending |
+| GEN-04 | Phase 6 | Pending |
+| GEN-05 | Phase 6 | Pending |
+| GEN-06 | Phase 7 | Pending |
+| GEN-07 | Phase 7 | Pending |
+| GEN-08 | Phase 7 | Pending |
+| EXEC-01 | Phase 8 | Pending |
+| EXEC-02 | Phase 8 | Pending |
+| EXEC-03 | Phase 9 | Pending |
+| EXEC-04 | Phase 9 | Pending |
+| EXEC-05 | Phase 9 | Pending |
+| EXEC-06 | Phase 9 | Pending |
+| EXEC-07 | Phase 9 | Pending |
+| EXEC-08 | Phase 9 | Pending |
+| EXEC-09 | Phase 8 | Pending |
+| EVAL-01 | Phase 10 | Pending |
+| EVAL-02 | Phase 10 | Pending |
+| EVAL-03 | Phase 10 | Pending |
+| EVAL-04 | Phase 10 | Pending |
+| EVAL-05 | Phase 10 | Pending |
+| EVAL-06 | Phase 1 | Pending |
+| EVAL-07 | Phase 10 | Pending |
+| EVAL-08 | Phase 1 | Pending |
+| EVAL-09 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 47 total
-- Mapped to phases: 0
-- Unmapped: 47 ⚠️
+- Mapped to phases: 47 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-18*
-*Last updated: 2026-03-18 after initial definition*
+*Last updated: 2026-03-19 after roadmap creation*
