@@ -1,5 +1,6 @@
 """Data ingestion, preprocessing, and dataset construction for LOB data."""
 
+from lob_forge.data.lobster import LOBSTERAdapter
 from lob_forge.data.schema import (
     ALL_COLUMNS,
     LOB_SCHEMA,
@@ -11,6 +12,7 @@ from lob_forge.data.validation import compute_quality_metrics, validate_lob_data
 __all__ = [
     "ALL_COLUMNS",
     "LOB_SCHEMA",
+    "LOBSTERAdapter",
     "compute_quality_metrics",
     "read_lob_parquet",
     "validate_lob_dataframe",
