@@ -17,6 +17,7 @@ dependencies = [
     "seaborn",
     "gymnasium",
     "tqdm",
+    "requests",
 ]
 
 [project.optional-dependencies]
