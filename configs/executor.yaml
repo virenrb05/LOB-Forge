@@ -1,0 +1,16 @@
+# @package _global_
+
+executor:
+  n_actions: 7
+  gamma: 0.99
+  lr: 5.0e-4
+  buffer_size: 100000
+  batch_size: 64
+  epsilon_start: 1.0
+  epsilon_end: 0.01
+  epsilon_decay: 0.995
+  target_update_freq: 1000
+  curriculum_stages:
+    - low_vol
+    - mixed
+    - adversarial

@@ -1,0 +1,20 @@
+# @package _global_
+
+data:
+  symbol: BTCUSDT
+  source: bybit
+  depth: 10  # LOB levels
+  sequence_length: 100
+  horizons:
+    - 10
+    - 20
+    - 50
+    - 100
+  label_threshold: 0.00002  # 2 bps
+  normalization_window: 5000
+  resample_interval_ms: 100
+  split:
+    train: 0.7
+    val: 0.15
+    test: 0.15
+  data_dir: data/

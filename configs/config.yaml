@@ -1,0 +1,22 @@
+defaults:
+  - data
+  - predictor
+  - generator
+  - executor
+  - _self_
+
+project:
+  name: lob-forge
+  seed: 42
+  device: auto  # auto-detects MPS/CUDA/CPU
+
+training:
+  epochs: 50
+  batch_size: 256
+  gradient_accumulation: 2
+  early_stopping_patience: 10
+  num_workers: 0  # MPS works best with 0
+
+wandb:
+  project: lob-forge
+  enabled: true

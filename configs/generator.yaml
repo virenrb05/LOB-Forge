@@ -1,0 +1,13 @@
+# @package _global_
+
+generator:
+  noise_steps: 1000
+  ddim_steps: 50
+  noise_schedule: cosine
+  d_model: 128
+  n_layers: 4
+  ema_decay: 0.9999
+  conditioning:
+    - timestep
+    - regime
+    - time_of_day
