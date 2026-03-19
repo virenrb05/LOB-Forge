@@ -160,10 +160,10 @@ Which phases cover which requirements. Updated by create-roadmap.
 | EVAL-03 | Phase 10 | Pending |
 | EVAL-04 | Phase 10 | Pending |
 | EVAL-05 | Phase 10 | Pending |
-| EVAL-06 | Phase 1 | Pending |
+| EVAL-06 | Phase 1 | Complete |
 | EVAL-07 | Phase 10 | Pending |
-| EVAL-08 | Phase 1 | Pending |
-| EVAL-09 | Phase 1 | Pending |
+| EVAL-08 | Phase 1 | Complete |
+| EVAL-09 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 47 total

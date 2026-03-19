@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 1 — Scaffold (complete, ready for verification)
+**Current focus:** Phase 2 — Data Ingestion
 
 ## Current Position
 
-Phase: 1 of 10 (Scaffold)
-Plan: 01-02 complete (all phase 1 plans done)
-Status: Phase 1 complete, ready for phase verification
-Last activity: 2026-03-19 — Plan 01-02 hydra-configs-mps complete
+Phase: 2 of 10 (Data Ingestion)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-03-19 — Phase 1 Scaffold verified and complete
 
 Progress: █░░░░░░░░░ 10%
 
