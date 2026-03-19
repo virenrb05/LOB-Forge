@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Packaging
+*.egg-info/
+*.egg
+.eggs/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Model checkpoints
+*.pt
+*.pth
+*.ckpt
+
+# Data (large files)
+/data/
+*.parquet
+
+# Experiment outputs
+outputs/
+wandb/
+
+# Environment variables
+.env
+
+# Jupyter
+notebooks/.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

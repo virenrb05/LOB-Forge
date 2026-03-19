@@ -1,0 +1,49 @@
+[project]
+name = "lob-forge"
+version = "0.1.0"
+description = "LOB-Forge: Limit Order Book generation, prediction, and execution via deep learning"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "torch>=2.1.0",
+    "hydra-core>=1.3",
+    "omegaconf>=2.3",
+    "wandb",
+    "pyarrow",
+    "pandas",
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "seaborn",
+    "gymnasium",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "ruff",
+    "pytest",
+    "ipykernel",
+]
+
+[build-system]
+requires = ["setuptools>=68.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["lob_forge*"]
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
