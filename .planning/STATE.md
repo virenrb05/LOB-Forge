@@ -88,6 +88,8 @@ Recent decisions affecting current work:
 - AdaLN uses (1+scale) modulation for identity-initialised conditioning injection
 - GroupNorm with min(32, channels) groups in AdaLN for flexible channel counts
 - Xavier-uniform init on Conv1d weights, zero biases in ResBlock1D for stable training
+- Cosine schedule computed in float64 intermediates, stored as float32 buffers for numerical precision
+- EMA is plain class (not nn.Module): shadow params as dict, simpler than buffer registration
 
 ### Pending Todos
 
