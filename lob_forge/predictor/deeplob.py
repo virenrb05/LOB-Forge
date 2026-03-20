@@ -50,8 +50,6 @@ class DeepLOB(nn.Module):
         self.n_horizons = n_horizons
         self.lstm_hidden = lstm_hidden
 
-        in_features = n_levels * features_per_level  # 40
-
         # --- Conv block 1: (B, 1, T, 40) -> (B, 16, T, 20) ---
         self.conv1 = nn.Sequential(
             nn.Conv2d(1, 16, kernel_size=(1, 2), stride=(1, 2)),

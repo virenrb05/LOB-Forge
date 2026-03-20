@@ -42,10 +42,11 @@ class LinearBaseline(nn.Module):
         self.n_classes = n_classes
         self.n_horizons = n_horizons
 
-        in_features = n_levels * features_per_level  # 40
-
         self.heads = nn.ModuleList(
-            [nn.Linear(in_features, n_classes) for _ in range(n_horizons)]
+            [
+                nn.Linear(n_levels * features_per_level, n_classes)
+                for _ in range(n_horizons)
+            ]
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
