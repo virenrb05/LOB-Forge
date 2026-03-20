@@ -22,3 +22,8 @@ predictor:
   scheduler:
     max_lr: 1.0e-3
     pct_start: 0.1
+  walk_forward:
+    enabled: false
+    n_windows: 3
+    train_ratio: 0.7
+    purge_gap: 10
