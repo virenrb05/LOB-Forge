@@ -49,9 +49,7 @@ def compute_classification_metrics(
         f1_w = float(
             f1_score(yt, yp, labels=labels, average="weighted", zero_division=0)
         )
-        f1_m = float(
-            f1_score(yt, yp, labels=labels, average="macro", zero_division=0)
-        )
+        f1_m = float(f1_score(yt, yp, labels=labels, average="macro", zero_division=0))
         prec_m = float(
             precision_score(yt, yp, labels=labels, average="macro", zero_division=0)
         )
@@ -65,9 +63,7 @@ def compute_classification_metrics(
         metrics[f"horizon_{h}_recall_macro"] = rec_m
 
         # Per-class F1
-        f1_per_class = f1_score(
-            yt, yp, labels=labels, average=None, zero_division=0
-        )
+        f1_per_class = f1_score(yt, yp, labels=labels, average=None, zero_division=0)
         for c in range(n_classes):
             metrics[f"horizon_{h}_f1_class_{c}"] = float(f1_per_class[c])
 

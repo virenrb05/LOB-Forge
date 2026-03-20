@@ -36,6 +36,7 @@ class LOBDataset(Dataset):
         sequence_length: int = 100,
         horizons: list[int] | None = None,
         feature_cols: list[str] | None = None,
+        vpin_col: str | None = None,
     ) -> None:
         if horizons is None:
             horizons = [10, 20, 50, 100]
@@ -64,11 +65,20 @@ class LOBDataset(Dataset):
         self.sequence_length = sequence_length
         self.feature_cols = feature_cols
         self.label_cols = label_cols
+        self.vpin_col = vpin_col
+        self.vpin: np.ndarray | None = None
+        if vpin_col is not None and vpin_col in df.columns:
+            self.vpin = df[vpin_col].to_numpy(dtype=np.float32)
 
     def __len__(self) -> int:
         return len(self.features) - self.sequence_length
 
-    def __getitem__(self, idx: int) -> tuple[torch.Tensor, torch.Tensor]:
+    def __getitem__(
+        self, idx: int
+    ) -> (
+        tuple[torch.Tensor, torch.Tensor]
+        | tuple[torch.Tensor, torch.Tensor, torch.Tensor]
+    ):
         features = torch.from_numpy(
             self.features[idx : idx + self.sequence_length].copy()
         )
@@ -77,6 +87,11 @@ class LOBDataset(Dataset):
         # NaN labels become 0 (safe default); real training masks NaN rows
         label_clean = np.where(np.isnan(raw_label), 0, raw_label)
         labels = torch.tensor(label_clean, dtype=torch.int64)
+        if self.vpin is not None:
+            vpin_target = torch.tensor(
+                self.vpin[idx + self.sequence_length], dtype=torch.float32
+            )
+            return features, labels, vpin_target
         return features, labels
 
 
