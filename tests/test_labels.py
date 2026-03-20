@@ -164,10 +164,13 @@ class TestCausality:
 
     def test_modifying_future_does_not_change_past_labels(self):
         """
-        Compute labels, modify mid_price at row 50, recompute.
-        Labels at rows 0..49 must NOT change.
+        Compute labels, modify mid_price at row 100, recompute.
+        For each horizon h, label at row t uses mid_price[t+1..t+h].
+        Changing row 100 can only affect labels at rows (100-h)..99.
+        Rows 0..(100-h-1) must NOT change.
         """
-        n = 200
+        n = 300
+        modify_row = 100
         np.random.seed(42)
         prices = 100.0 + np.cumsum(np.random.randn(n) * 0.01)
         df_original = _make_mid_price_df(prices.tolist())
@@ -175,17 +178,20 @@ class TestCausality:
         horizons = [10, 20, 50]
         labels_before = compute_labels(df_original.copy(), horizons=horizons)
 
-        # Modify price at row 50
+        # Modify price at target row
         df_modified = df_original.copy()
-        df_modified.loc[50, MID_PRICE] = 999.0  # drastic change
+        df_modified.loc[modify_row, MID_PRICE] = 999.0  # drastic change
 
         labels_after = compute_labels(df_modified, horizons=horizons)
 
         for h in horizons:
             col = f"label_h{h}"
-            # Rows 0..49 must be identical (no future leakage)
-            before_slice = labels_before[col].iloc[:50]
-            after_slice = labels_after[col].iloc[:50]
+            # Safe boundary: rows where t+h < modify_row, i.e. t < modify_row - h
+            safe_end = modify_row - h
+            assert safe_end > 0, f"Need modify_row > h for meaningful test"
+
+            before_slice = labels_before[col].iloc[:safe_end]
+            after_slice = labels_after[col].iloc[:safe_end]
 
             # Handle NaN comparison correctly
             both_nan = before_slice.isna() & after_slice.isna()
@@ -193,8 +199,8 @@ class TestCausality:
             match = both_nan | both_equal
 
             assert match.all(), (
-                f"Causality violated for {col}: labels at rows <50 changed "
-                f"after modifying row 50"
+                f"Causality violated for {col}: labels at rows <{safe_end} changed "
+                f"after modifying row {modify_row}"
             )
 
     def test_modifying_past_may_change_nearby_labels(self):
