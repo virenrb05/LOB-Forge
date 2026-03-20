@@ -14,7 +14,6 @@ Architecture follows TLOB (arXiv 2502.15757):
 
 from __future__ import annotations
 
-import torch
 from torch import Tensor, nn
 
 
