@@ -10,7 +10,9 @@ from lob_forge.predictor.metrics import (
 from lob_forge.predictor.model import DualAttentionTransformer
 from lob_forge.predictor.spatial_attention import SpatialAttentionBlock
 from lob_forge.predictor.temporal_attention import TemporalAttentionBlock
+from lob_forge.predictor.train import compare_models, train_predictor
 from lob_forge.predictor.trainer import build_model, train_model
+from lob_forge.predictor.walk_forward import walk_forward_eval
 
 __all__ = [
     "DualAttentionTransformer",
@@ -20,7 +22,10 @@ __all__ = [
     "SpatialAttentionBlock",
     "TemporalAttentionBlock",
     "build_model",
+    "compare_models",
     "compute_classification_metrics",
     "compute_vpin_metrics",
     "train_model",
+    "train_predictor",
+    "walk_forward_eval",
 ]
