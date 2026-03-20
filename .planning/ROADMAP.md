@@ -11,7 +11,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Scaffold** - Project structure, Hydra configs, linting, MPS validation
-- [ ] **Phase 2: Data Ingestion** - Bybit downloader, LOBSTER adapter, unified Parquet schema
+- [x] **Phase 2: Data Ingestion** - Bybit downloader, LOBSTER adapter, unified Parquet schema
 - [ ] **Phase 3: Data Preprocessing** - Features, labeling, normalization, splits, PyTorch Datasets
 - [ ] **Phase 4: Predictor Architecture** - TLOB transformer, DeepLOB baseline, focal loss
 - [ ] **Phase 5: Predictor Training** - Multi-horizon prediction, VPIN head, walk-forward eval, wandb
@@ -160,7 +160,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Scaffold | 2/2 | Complete | 2026-03-19 |
-| 2. Data Ingestion | 2/3 | In progress | - |
+| 2. Data Ingestion | 3/3 | Complete | 2026-03-19 |
 | 3. Data Preprocessing | 0/TBD | Not started | - |
 | 4. Predictor Architecture | 0/TBD | Not started | - |
 | 5. Predictor Training | 0/TBD | Not started | - |
