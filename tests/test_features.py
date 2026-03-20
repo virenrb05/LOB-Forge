@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-import pytest
 
 from lob_forge.data.features import (
     compute_all_features,
@@ -25,8 +24,8 @@ from lob_forge.data.schema import (
     SPREAD,
     TIMESTAMP,
     TRADE_PRICE,
-    TRADE_SIZE,
     TRADE_SIDE,
+    TRADE_SIZE,
 )
 
 
@@ -59,7 +58,9 @@ def _make_lob_df(n: int = 10, **overrides) -> pd.DataFrame:
 class TestMidReturns:
     def test_basic_return(self):
         """Mid return_1 at row 1 = (101-100)/100 = 0.01."""
-        df = _make_lob_df(5, **{MID_PRICE: np.array([100.0, 101.0, 102.0, 103.0, 104.0])})
+        df = _make_lob_df(
+            5, **{MID_PRICE: np.array([100.0, 101.0, 102.0, 103.0, 104.0])}
+        )
         result = compute_mid_returns(df, lookbacks=[1])
         assert "mid_return_1" in result.columns
         assert np.isnan(result["mid_return_1"].iloc[0])

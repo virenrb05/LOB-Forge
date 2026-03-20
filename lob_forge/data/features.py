@@ -84,9 +84,7 @@ def compute_microprice(df: pd.DataFrame) -> pd.Series:
     return (bp * as_ + ap * bs) / (bs + as_ + _EPS)
 
 
-def compute_depth_imbalance(
-    df: pd.DataFrame, levels: int = 10
-) -> pd.DataFrame:
+def compute_depth_imbalance(df: pd.DataFrame, levels: int = 10) -> pd.DataFrame:
     """Compute depth imbalance per book level.
 
     For each level i=1..levels:

@@ -4,11 +4,9 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-import pytest
 
 from lob_forge.data.labels import compute_labels
 from lob_forge.data.schema import MID_PRICE
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -57,7 +55,9 @@ class TestMonotonicPrices:
 
         col = "label_h10"
         valid = result[col].dropna()
-        assert (valid == 1.0).all(), f"Expected all STATIONARY, got:\n{valid.value_counts()}"
+        assert (
+            valid == 1.0
+        ).all(), f"Expected all STATIONARY, got:\n{valid.value_counts()}"
 
 
 # ---------------------------------------------------------------------------
@@ -86,14 +86,14 @@ class TestMultiHorizon:
         for h in horizons:
             col = f"label_h{h}"
             tail = result[col].iloc[-h:]
-            assert tail.isna().all(), (
-                f"label_h{h}: last {h} rows should be NaN, got {tail.tolist()}"
-            )
+            assert (
+                tail.isna().all()
+            ), f"label_h{h}: last {h} rows should be NaN, got {tail.tolist()}"
             # Rows before that should NOT be NaN
             head = result[col].iloc[:-h]
-            assert head.notna().all(), (
-                f"label_h{h}: rows before last {h} should not be NaN"
-            )
+            assert (
+                head.notna().all()
+            ), f"label_h{h}: rows before last {h} should not be NaN"
 
 
 # ---------------------------------------------------------------------------
@@ -113,9 +113,9 @@ class TestLabelDtype:
         df = _make_mid_price_df([100.0 + 0.001 * i for i in range(200)])
         result = compute_labels(df, horizons=[10])
         valid_values = result["label_h10"].dropna().unique()
-        assert set(valid_values).issubset({0.0, 1.0, 2.0}), (
-            f"Unexpected label values: {valid_values}"
-        )
+        assert set(valid_values).issubset(
+            {0.0, 1.0, 2.0}
+        ), f"Unexpected label values: {valid_values}"
 
 
 # ---------------------------------------------------------------------------
@@ -147,7 +147,7 @@ class TestManualComputation:
         expected = [2.0, 2.0, 0.0, 0.0, np.nan, np.nan, np.nan]
         actual = result[col].tolist()
 
-        for i, (exp, act) in enumerate(zip(expected, actual)):
+        for i, (exp, act) in enumerate(zip(expected, actual, strict=True)):
             if np.isnan(exp):
                 assert np.isnan(act), f"Row {i}: expected NaN, got {act}"
             else:
@@ -188,7 +188,7 @@ class TestCausality:
             col = f"label_h{h}"
             # Safe boundary: rows where t+h < modify_row, i.e. t < modify_row - h
             safe_end = modify_row - h
-            assert safe_end > 0, f"Need modify_row > h for meaningful test"
+            assert safe_end > 0, "Need modify_row > h for meaningful test"
 
             before_slice = labels_before[col].iloc[:safe_end]
             after_slice = labels_after[col].iloc[:safe_end]
