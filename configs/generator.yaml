@@ -1,13 +1,28 @@
 # @package _global_
 
 generator:
+  in_channels: 40
+  d_model: 128
+  channel_mults: [1, 2, 4, 4]
+  n_res_blocks: 2
   noise_steps: 1000
   ddim_steps: 50
   noise_schedule: cosine
-  d_model: 128
-  n_layers: 4
+  n_regimes: 3
+  dropout: 0.1
+  attention_levels: [2, 3]
+  n_heads: 4
   ema_decay: 0.9999
   conditioning:
     - timestep
     - regime
     - time_of_day
+  optimizer:
+    lr: 1.0e-4
+    weight_decay: 0.0
+  training:
+    epochs: 100
+    batch_size: 64
+    gradient_accumulation: 1
+    save_every: 10
+    sample_every: 20
