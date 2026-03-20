@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 3 of 10 (Data Preprocessing)
-Plan: 03-01 complete (LOB derived features)
+Plan: 03-04 complete (preprocessing pipeline)
 Status: In progress
-Last activity: 2026-03-19 — Plan 03-01 executed (6 feature functions with VPIN)
+Last activity: 2026-03-19 — Plan 03-04 executed (resampling, z-score, full pipeline)
 
 Progress: ██░░░░░░░░ 20%
 
@@ -29,7 +29,7 @@ Progress: ██░░░░░░░░ 20%
 |-------|-------|-------|----------|
 | 01-scaffold | 2/2 | ~10 min | ~5 min |
 | 02-data-ingestion | 3/3 | ~8 min | ~2.7 min |
-| 03-data-preprocessing | 3/5 | ~10 min | ~3.3 min |
+| 03-data-preprocessing | 4/5 | ~12 min | ~3 min |
 
 **Recent Trend:**
 - Last 5 plans: 02-03, 02-02, 03-03, 03-02, 03-01
