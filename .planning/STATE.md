@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 5 complete — predictor training infrastructure done, ready for Phase 6
+**Current focus:** Phase 6 in progress — generator core building blocks
 
 ## Current Position
 
-Phase: 5 of 10 (Predictor Training) — COMPLETE
-Plan: 05-03 complete (all plans done, phase verified)
-Status: Phase 5 done, ready for Phase 6 (Generator Core)
-Last activity: 2026-03-20 — Walk-forward eval, Hydra CLI, model comparison, test suite
+Phase: 6 of 10 (Generator Core) — IN PROGRESS
+Plan: 06-02 complete (conditioning embeddings + AdaLN blocks)
+Status: Plan 06-02 done, ready for plan 06-03
+Last activity: 2026-03-20 — Conditioning module, AdaLN, ResBlock1D
 
-Progress: █████░░░░░ 50%
+Progress: █████▌░░░░ 55%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
-- Average duration: ~3.0 min
-- Total execution time: ~57 min
+- Total plans completed: 21
+- Average duration: ~2.9 min
+- Total execution time: ~61 min
 
 **By Phase:**
 
@@ -32,9 +32,10 @@ Progress: █████░░░░░ 50%
 | 03-data-preprocessing | 7/7 | ~22 min | ~3.1 min |
 | 04-predictor-architecture | 4/4 | ~8 min | ~2 min |
 | 05-predictor-training | 3/3 | ~9 min | ~3 min |
+| 06-generator-core | 2/? | ~4 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-04, 05-01, 05-02, 05-03
+- Last 5 plans: 05-02, 05-03, 06-01, 06-02
 - Trend: Steady
 
 ## Accumulated Context
@@ -84,6 +85,9 @@ Recent decisions affecting current work:
 - Trainer passes explicit 40 book columns (BOOK_FEATURE_COLS) to LOBDataset to avoid derived features
 - Model output: dict for DualAttentionTransformer, plain Tensor for baselines; _extract_logits() handles both
 - Class weights computed as inverse frequency; pin_memory=False for MPS/CPU
+- AdaLN uses (1+scale) modulation for identity-initialised conditioning injection
+- GroupNorm with min(32, channels) groups in AdaLN for flexible channel counts
+- Xavier-uniform init on Conv1d weights, zero biases in ResBlock1D for stable training
 
 ### Pending Todos
 
@@ -96,5 +100,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-20
-Stopped at: Phase 5 complete — all training infrastructure verified
-Resume file: .planning/phases/05-predictor-training/VERIFICATION.md
+Stopped at: Plan 06-02 complete — conditioning embeddings and AdaLN blocks implemented
+Resume file: .planning/phases/06-generator-core/06-02-SUMMARY.md
