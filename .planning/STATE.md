@@ -19,9 +19,9 @@ Progress: ███▒░░░░░░ 35%
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
-- Average duration: ~3.2 min
-- Total execution time: ~42 min
+- Total plans completed: 14
+- Average duration: ~3.1 min
+- Total execution time: ~44 min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: ███▒░░░░░░ 35%
 | 01-scaffold | 2/2 | ~10 min | ~5 min |
 | 02-data-ingestion | 3/3 | ~8 min | ~2.7 min |
 | 03-data-preprocessing | 7/7 | ~22 min | ~3.1 min |
-| 04-predictor-architecture | 1/? | ~2 min | ~2 min |
+| 04-predictor-architecture | 2/? | ~4 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-05, 03-06, 03-07, 04-01
+- Last 5 plans: 03-06, 03-07, 04-01, 04-02
 - Trend: Accelerating
 
 ## Accumulated Context
@@ -70,6 +70,9 @@ Recent decisions affecting current work:
 - Attention blocks use Pre-LN (norm_first=True) with GELU per TLOB paper
 - Boolean causal mask registered as buffer, sliced to actual T in forward for efficiency
 - Attention blocks accept pre-reshaped tensors; caller handles 4D-to-3D reshaping
+- DeepLOB uses stride-2 Conv2d for spatial reduction (not pooling)
+- LinearBaseline uses only last time step — no sequence processing, no hidden layers
+- Both baselines use nn.ModuleList for per-horizon heads (matching TLOB interface)
 
 ### Pending Todos
 
@@ -82,5 +85,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-20
-Stopped at: Phase 4, plan 01 complete — attention blocks implemented
-Resume file: .planning/phases/04-predictor-architecture/04-01-SUMMARY.md
+Stopped at: Phase 4, plan 02 complete — baseline models implemented
+Resume file: .planning/phases/04-predictor-architecture/04-02-SUMMARY.md
