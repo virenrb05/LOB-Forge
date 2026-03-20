@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 3 of 10 (Data Preprocessing)
-Plan: 03-04 complete (preprocessing pipeline)
-Status: In progress
-Last activity: 2026-03-19 — Plan 03-04 executed (resampling, z-score, full pipeline)
+Plan: 03-05 complete (PyTorch datasets)
+Status: All plans complete, verifying phase goal
+Last activity: 2026-03-19 — All 5 plans executed, 73 tests passing
 
-Progress: ██░░░░░░░░ 20%
+Progress: ███░░░░░░░ 30%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: ~3.5 min
-- Total execution time: ~28 min
+- Total plans completed: 10
+- Average duration: ~3.3 min
+- Total execution time: ~33 min
 
 **By Phase:**
 
@@ -29,7 +29,7 @@ Progress: ██░░░░░░░░ 20%
 |-------|-------|-------|----------|
 | 01-scaffold | 2/2 | ~10 min | ~5 min |
 | 02-data-ingestion | 3/3 | ~8 min | ~2.7 min |
-| 03-data-preprocessing | 4/5 | ~12 min | ~3 min |
+| 03-data-preprocessing | 5/5 | ~15 min | ~3 min |
 
 **Recent Trend:**
 - Last 5 plans: 02-03, 02-02, 03-03, 03-02, 03-01
@@ -60,6 +60,9 @@ Recent decisions affecting current work:
 - Feature functions use epsilon (1e-12) denominator guard for division-by-zero protection
 - VPIN uses bulk volume classification with scipy.stats.norm.cdf and rolling sigma window of 50
 - VPIN forward-fills for non-trade rows, clips to [0, 1]
+- _get() helper in preprocessor supports both dict and OmegaConf attribute-style access
+- NaN labels mapped to 0 in LOBDataset; real training should mask NaN rows
+- Regime labels from realized vol quantiles (0.33, 0.67): low-vol(0), normal(1), high-vol(2)
 
 ### Pending Todos
 
@@ -72,5 +75,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: Plan 03-01 complete, continuing Phase 3
-Resume file: .planning/phases/03-data-preprocessing/03-01-SUMMARY.md
+Stopped at: Phase 3 all plans complete, verifying phase goal
+Resume file: .planning/phases/03-data-preprocessing/03-05-SUMMARY.md
