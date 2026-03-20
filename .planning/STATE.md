@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 3 complete, ready for Phase 4
+**Current focus:** Phase 4 in progress — predictor architecture
 
 ## Current Position
 
-Phase: 3 of 10 (Data Preprocessing) — COMPLETE
-Plan: All 7 plans complete, phase verified
-Status: Phase 3 verified and complete
-Last activity: 2026-03-20 — Phase verified, 89 tests passing, all 5 success criteria met
+Phase: 4 of 10 (Predictor Architecture) — IN PROGRESS
+Plan: 04-02 complete (baseline models)
+Status: Plan 04-02 done, continuing phase 4
+Last activity: 2026-03-20 — DeepLOB and LinearBaseline baseline models implemented
 
-Progress: ███░░░░░░░ 30%
+Progress: ███▒░░░░░░ 35%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
-- Average duration: ~3.3 min
-- Total execution time: ~40 min
+- Total plans completed: 13
+- Average duration: ~3.2 min
+- Total execution time: ~42 min
 
 **By Phase:**
 
@@ -30,9 +30,10 @@ Progress: ███░░░░░░░ 30%
 | 01-scaffold | 2/2 | ~10 min | ~5 min |
 | 02-data-ingestion | 3/3 | ~8 min | ~2.7 min |
 | 03-data-preprocessing | 7/7 | ~22 min | ~3.1 min |
+| 04-predictor-architecture | 1/? | ~2 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03, 02-02, 03-03, 03-02, 03-01
+- Last 5 plans: 03-05, 03-06, 03-07, 04-01
 - Trend: Accelerating
 
 ## Accumulated Context
@@ -66,6 +67,9 @@ Recent decisions affecting current work:
 - rolling_zscore tolerance for zero-mean: abs(mean) < 0.15; unit-variance: std in [0.5, 2.0] (accounts for rolling window statistical variance)
 - OFI/MLOFI are additive flow-based features; existing static imbalance functions preserved
 - compute_all_features produces 20 columns (was 18) after adding ofi and mlofi
+- Attention blocks use Pre-LN (norm_first=True) with GELU per TLOB paper
+- Boolean causal mask registered as buffer, sliced to actual T in forward for efficiency
+- Attention blocks accept pre-reshaped tensors; caller handles 4D-to-3D reshaping
 
 ### Pending Todos
 
@@ -78,5 +82,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-20
-Stopped at: Phase 3 complete and verified, ready for Phase 4
-Resume file: .planning/phases/03-data-preprocessing/03-VERIFICATION.md
+Stopped at: Phase 4, plan 01 complete — attention blocks implemented
+Resume file: .planning/phases/04-predictor-architecture/04-01-SUMMARY.md
