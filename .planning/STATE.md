@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 3 of 10 (Data Preprocessing)
-Plan: 03-05 complete (PyTorch datasets)
-Status: All plans complete, verifying phase goal
-Last activity: 2026-03-19 — All 5 plans executed, 73 tests passing
+Plan: 03-06 complete (rolling_zscore tests — gap closure)
+Status: Gap closure plans in progress
+Last activity: 2026-03-20 — Plan 06 executed, 81 tests (80 passing, 1 pre-existing failure in test_features)
 
 Progress: ███░░░░░░░ 30%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: ~3.3 min
-- Total execution time: ~33 min
+- Total execution time: ~36 min
 
 **By Phase:**
 
@@ -29,7 +29,7 @@ Progress: ███░░░░░░░ 30%
 |-------|-------|-------|----------|
 | 01-scaffold | 2/2 | ~10 min | ~5 min |
 | 02-data-ingestion | 3/3 | ~8 min | ~2.7 min |
-| 03-data-preprocessing | 5/5 | ~15 min | ~3 min |
+| 03-data-preprocessing | 6/7 | ~18 min | ~3 min |
 
 **Recent Trend:**
 - Last 5 plans: 02-03, 02-02, 03-03, 03-02, 03-01
@@ -63,6 +63,7 @@ Recent decisions affecting current work:
 - _get() helper in preprocessor supports both dict and OmegaConf attribute-style access
 - NaN labels mapped to 0 in LOBDataset; real training should mask NaN rows
 - Regime labels from realized vol quantiles (0.33, 0.67): low-vol(0), normal(1), high-vol(2)
+- rolling_zscore tolerance for zero-mean: abs(mean) < 0.15; unit-variance: std in [0.5, 2.0] (accounts for rolling window statistical variance)
 
 ### Pending Todos
 
@@ -74,6 +75,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19
-Stopped at: Phase 3 all plans complete, verifying phase goal
-Resume file: .planning/phases/03-data-preprocessing/03-05-SUMMARY.md
+Last session: 2026-03-20
+Stopped at: Plan 03-06 complete (rolling_zscore tests), plan 03-07 in progress by parallel agent
+Resume file: .planning/phases/03-data-preprocessing/03-06-SUMMARY.md
