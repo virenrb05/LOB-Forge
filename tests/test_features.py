@@ -10,6 +10,8 @@ from lob_forge.data.features import (
     compute_depth_imbalance,
     compute_microprice,
     compute_mid_returns,
+    compute_mlofi,
+    compute_ofi,
     compute_order_imbalance,
     compute_spread_bps,
     compute_vpin,
@@ -219,12 +221,113 @@ class TestVpin:
             assert not result.iloc[-1:].isna().any()
 
 
+# ---- compute_ofi ----
+
+
+class TestOfi:
+    def test_unchanged_book_gives_zero_ofi(self):
+        """When bid/ask prices and sizes don't change, OFI should be 0."""
+        df = _make_lob_df(5)
+        # Ensure constant prices and sizes (default helper already does this)
+        result = compute_ofi(df)
+        # Rows 1..4 should be 0 (unchanged book)
+        np.testing.assert_array_almost_equal(result.iloc[1:].values, 0.0)
+
+    def test_known_ofi_value(self):
+        """Bid_size increases by 10 while bid_price stays same -> OFI = +10."""
+        df = _make_lob_df(3)
+        # Set constant bid price
+        df[BID_PRICE_COLS[0]] = 100.0
+        # Set constant ask price and ask size
+        df[ASK_PRICE_COLS[0]] = 101.0
+        df[ASK_SIZE_COLS[0]] = 50.0
+        # Bid size increases: 100, 110, 120
+        df[BID_SIZE_COLS[0]] = [100.0, 110.0, 120.0]
+        result = compute_ofi(df)
+        # Row 1: delta_bid=+10, bid_price unchanged so indicator=1
+        #         delta_ask=0, ask_price unchanged so indicator=1
+        #         OFI = 10*1 - 0*1 = 10
+        np.testing.assert_almost_equal(result.iloc[1], 10.0)
+        np.testing.assert_almost_equal(result.iloc[2], 10.0)
+
+    def test_first_row_is_nan(self):
+        """First row has no previous snapshot, so OFI must be NaN."""
+        df = _make_lob_df(5)
+        result = compute_ofi(df)
+        assert np.isnan(result.iloc[0])
+
+    def test_price_level_change_resets(self):
+        """When bid_price drops below previous, bid_size delta should NOT contribute."""
+        df = _make_lob_df(3)
+        # Bid price drops from 100 to 99
+        df[BID_PRICE_COLS[0]] = [100.0, 99.0, 99.0]
+        df[BID_SIZE_COLS[0]] = [100.0, 200.0, 200.0]
+        # Ask stays the same
+        df[ASK_PRICE_COLS[0]] = 101.0
+        df[ASK_SIZE_COLS[0]] = 50.0
+        result = compute_ofi(df)
+        # Row 1: bid_price dropped (99 < 100), indicator=0
+        #         delta_bid=+100, but multiplied by 0 = 0
+        #         delta_ask=0, ask_price unchanged indicator=1, 0*1 = 0
+        #         OFI = 0 - 0 = 0
+        np.testing.assert_almost_equal(result.iloc[1], 0.0)
+
+
+# ---- compute_mlofi ----
+
+
+class TestMlofi:
+    def test_returns_series(self):
+        """Output is a pd.Series named 'mlofi'."""
+        df = _make_lob_df(5)
+        result = compute_mlofi(df)
+        assert isinstance(result, pd.Series)
+        assert result.name == "mlofi"
+
+    def test_decay_weighting(self):
+        """Level 1 contributes more than level 2 (decay < 1)."""
+        df = _make_lob_df(3)
+        # Make level 1 and level 2 both have the same size change
+        for i in range(2):
+            df[BID_PRICE_COLS[i]] = 100.0
+            df[ASK_PRICE_COLS[i]] = 101.0
+            df[ASK_SIZE_COLS[i]] = 50.0
+        df[BID_SIZE_COLS[0]] = [100.0, 110.0, 110.0]
+        df[BID_SIZE_COLS[1]] = [100.0, 110.0, 110.0]
+        # Level 1 only
+        mlofi_1 = compute_mlofi(df, levels=1, decay=0.5)
+        # Level 2 only contribution = mlofi(levels=2) - mlofi(levels=1)
+        mlofi_2 = compute_mlofi(df, levels=2, decay=0.5)
+        # Level 2 contribution should be decay * level1_contribution = 0.5 * level1
+        level1_contrib = mlofi_1.iloc[1]
+        level2_contrib = mlofi_2.iloc[1] - mlofi_1.iloc[1]
+        np.testing.assert_almost_equal(level2_contrib, 0.5 * level1_contrib)
+
+    def test_first_row_is_nan(self):
+        """First row is NaN."""
+        df = _make_lob_df(5)
+        result = compute_mlofi(df)
+        assert np.isnan(result.iloc[0])
+
+    def test_single_level_equals_ofi(self):
+        """compute_mlofi(df, levels=1, decay=0.5) should equal compute_ofi(df)."""
+        df = _make_lob_df(5)
+        # Make some variation
+        df[BID_SIZE_COLS[0]] = [100.0, 110.0, 105.0, 120.0, 90.0]
+        df[BID_PRICE_COLS[0]] = [100.0, 100.0, 99.0, 100.0, 100.0]
+        ofi = compute_ofi(df)
+        mlofi = compute_mlofi(df, levels=1, decay=0.5)
+        # Both should be NaN at row 0, equal elsewhere
+        assert np.isnan(ofi.iloc[0]) and np.isnan(mlofi.iloc[0])
+        np.testing.assert_array_almost_equal(ofi.iloc[1:].values, mlofi.iloc[1:].values)
+
+
 # ---- compute_all_features ----
 
 
 class TestComputeAllFeatures:
-    def test_adds_18_columns(self):
-        """compute_all_features adds 18 new columns."""
+    def test_adds_20_columns(self):
+        """compute_all_features adds 20 new columns."""
         n = 200
         df = _make_lob_df(n)
         df[TRADE_PRICE] = df[MID_PRICE]
@@ -232,7 +335,7 @@ class TestComputeAllFeatures:
         original_cols = set(df.columns)
         result = compute_all_features(df)
         new_cols = set(result.columns) - original_cols
-        assert len(new_cols) == 18
+        assert len(new_cols) == 20
 
     def test_expected_columns_present(self):
         n = 200
@@ -244,7 +347,7 @@ class TestComputeAllFeatures:
             [f"mid_return_{k}" for k in [1, 5, 10, 50]]
             + ["order_imbalance", "microprice"]
             + [f"depth_imb_{i}" for i in range(1, 11)]
-            + ["spread_bps", "vpin"]
+            + ["spread_bps", "vpin", "ofi", "mlofi"]
         )
         for col in expected:
             assert col in result.columns, f"Missing column: {col}"
