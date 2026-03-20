@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 6 of 10 (Generator Core) — IN PROGRESS
-Plan: 06-03 complete (UNet1D denoiser architecture)
-Status: Plan 06-03 done, ready for plan 06-04
-Last activity: 2026-03-20 — UNet1D encoder-decoder with skip connections
+Plan: 06-04 complete (DiffusionModel with DDPM/DDIM sampling)
+Status: Plan 06-04 done, ready for next plan
+Last activity: 2026-03-20 — DiffusionModel composing schedule + UNet + conditioning
 
-Progress: █████▌░░░░ 55%
+Progress: █████▌░░░░ 57%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 22
+- Total plans completed: 23
 - Average duration: ~2.9 min
-- Total execution time: ~64 min
+- Total execution time: ~67 min
 
 **By Phase:**
 
@@ -32,10 +32,10 @@ Progress: █████▌░░░░ 55%
 | 03-data-preprocessing | 7/7 | ~22 min | ~3.1 min |
 | 04-predictor-architecture | 4/4 | ~8 min | ~2 min |
 | 05-predictor-training | 3/3 | ~9 min | ~3 min |
-| 06-generator-core | 3/? | ~7 min | ~2.3 min |
+| 06-generator-core | 4/? | ~10 min | ~2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-03, 06-01, 06-02, 06-03
+- Last 5 plans: 05-03, 06-01, 06-02, 06-03, 06-04
 - Trend: Steady
 
 ## Accumulated Context
@@ -93,6 +93,9 @@ Recent decisions affecting current work:
 - UNet1D: ~40M params with default config (d_model=128, channel_mults=(1,2,4,4))
 - Self-attention at levels 2,3 plus bottleneck sandwich for global context
 - Skip connections stored per-ResBlock, popped in reverse during decode
+- DiffusionModel composes schedule + UNet + conditioning; input (B,T,C) permuted to (B,C,T) for UNet, back on output
+- DDIM uses torch.linspace timestep subsequence; eta=0 is deterministic
+- generate() convenience defaults to DDIM for practical inference speed
 
 ### Pending Todos
 
@@ -105,5 +108,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-20
-Stopped at: Plan 06-03 complete — UNet1D denoiser architecture implemented
-Resume file: .planning/phases/06-generator-core/06-03-SUMMARY.md
+Stopped at: Plan 06-04 complete — DiffusionModel with DDPM/DDIM sampling
+Resume file: .planning/phases/06-generator-core/06-04-SUMMARY.md
