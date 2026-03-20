@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 4 of 10 (Predictor Architecture) — IN PROGRESS
-Plan: 04-02 complete (baseline models)
-Status: Plan 04-02 done, continuing phase 4
-Last activity: 2026-03-20 — DeepLOB and LinearBaseline baseline models implemented
+Plan: 04-03 complete (DualAttentionTransformer & FocalLoss)
+Status: Plan 04-03 done, continuing phase 4
+Last activity: 2026-03-20 — DualAttentionTransformer and FocalLoss implemented
 
 Progress: ███▒░░░░░░ 35%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
+- Total plans completed: 15
 - Average duration: ~3.1 min
-- Total execution time: ~44 min
+- Total execution time: ~46 min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: ███▒░░░░░░ 35%
 | 01-scaffold | 2/2 | ~10 min | ~5 min |
 | 02-data-ingestion | 3/3 | ~8 min | ~2.7 min |
 | 03-data-preprocessing | 7/7 | ~22 min | ~3.1 min |
-| 04-predictor-architecture | 2/? | ~4 min | ~2 min |
+| 04-predictor-architecture | 3/? | ~6 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-06, 03-07, 04-01, 04-02
+- Last 5 plans: 03-07, 04-01, 04-02, 04-03
 - Trend: Accelerating
 
 ## Accumulated Context
@@ -73,6 +73,10 @@ Recent decisions affecting current work:
 - DeepLOB uses stride-2 Conv2d for spatial reduction (not pooling)
 - LinearBaseline uses only last time step — no sequence processing, no hidden layers
 - Both baselines use nn.ModuleList for per-horizon heads (matching TLOB interface)
+- FocalLoss from scratch: class_weights as buffer, gamma=0 degrades to CE, supports 2D/3D logits
+- DualAttentionTransformer input reshape: .view(B, T, 4, 10).permute(0, 1, 3, 2) for per-level grouping
+- Model forward returns dict[str, Tensor] with logits, embedding, and optional vpin
+- Optional heads gated by constructor bool, absent from output dict when disabled
 
 ### Pending Todos
 
@@ -85,5 +89,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-20
-Stopped at: Phase 4, plan 02 complete — baseline models implemented
-Resume file: .planning/phases/04-predictor-architecture/04-02-SUMMARY.md
+Stopped at: Phase 4, plan 03 complete — DualAttentionTransformer and FocalLoss implemented
+Resume file: .planning/phases/04-predictor-architecture/04-03-SUMMARY.md
