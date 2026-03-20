@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 3 of 10 (Data Preprocessing)
-Plan: 03-06 complete (rolling_zscore tests — gap closure)
-Status: Gap closure plans in progress
-Last activity: 2026-03-20 — Plan 06 executed, 81 tests (80 passing, 1 pre-existing failure in test_features)
+Plan: 03-07 complete (OFI/MLOFI features — gap closure)
+Status: All plans complete (7/7), phase ready for final verification
+Last activity: 2026-03-20 — Plan 07 executed, 27 feature tests passing, DATA-06 satisfied
 
 Progress: ███░░░░░░░ 30%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: ~3.3 min
-- Total execution time: ~36 min
+- Total execution time: ~40 min
 
 **By Phase:**
 
@@ -29,7 +29,7 @@ Progress: ███░░░░░░░ 30%
 |-------|-------|-------|----------|
 | 01-scaffold | 2/2 | ~10 min | ~5 min |
 | 02-data-ingestion | 3/3 | ~8 min | ~2.7 min |
-| 03-data-preprocessing | 6/7 | ~18 min | ~3 min |
+| 03-data-preprocessing | 7/7 | ~22 min | ~3.1 min |
 
 **Recent Trend:**
 - Last 5 plans: 02-03, 02-02, 03-03, 03-02, 03-01
@@ -64,6 +64,8 @@ Recent decisions affecting current work:
 - NaN labels mapped to 0 in LOBDataset; real training should mask NaN rows
 - Regime labels from realized vol quantiles (0.33, 0.67): low-vol(0), normal(1), high-vol(2)
 - rolling_zscore tolerance for zero-mean: abs(mean) < 0.15; unit-variance: std in [0.5, 2.0] (accounts for rolling window statistical variance)
+- OFI/MLOFI are additive flow-based features; existing static imbalance functions preserved
+- compute_all_features produces 20 columns (was 18) after adding ofi and mlofi
 
 ### Pending Todos
 
@@ -76,5 +78,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-20
-Stopped at: Plan 03-06 complete (rolling_zscore tests), plan 03-07 in progress by parallel agent
-Resume file: .planning/phases/03-data-preprocessing/03-06-SUMMARY.md
+Stopped at: Phase 3 all gap closure plans complete (7/7), ready for phase verification
+Resume file: .planning/phases/03-data-preprocessing/03-07-SUMMARY.md
