@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 4 complete — predictor architecture done, ready for Phase 5
+**Current focus:** Phase 5 in progress — predictor training infrastructure
 
 ## Current Position
 
-Phase: 4 of 10 (Predictor Architecture) — COMPLETE
-Plan: 04-04 complete (architecture tests, exports, config)
-Status: Phase 4 done, ready for Phase 5 (training loop)
-Last activity: 2026-03-20 — Predictor test suite, __init__.py exports, config finalized
+Phase: 5 of 10 (Predictor Training) — IN PROGRESS
+Plan: 05-01 complete (metrics + training loop), executing Wave 2 (05-02, 05-03)
+Status: Wave 1 done, Wave 2 next
+Last activity: 2026-03-20 — Training loop, metrics, model factory, wandb integration
 
-Progress: ████░░░░░░ 40%
+Progress: ████▌░░░░░ 45%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16
-- Average duration: ~3.0 min
-- Total execution time: ~48 min
+- Total plans completed: 17
+- Average duration: ~3.1 min
+- Total execution time: ~53 min
 
 **By Phase:**
 
@@ -31,10 +31,11 @@ Progress: ████░░░░░░ 40%
 | 02-data-ingestion | 3/3 | ~8 min | ~2.7 min |
 | 03-data-preprocessing | 7/7 | ~22 min | ~3.1 min |
 | 04-predictor-architecture | 4/4 | ~8 min | ~2 min |
+| 05-predictor-training | 1/3 | ~5 min | ~5 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-01, 04-02, 04-03, 04-04
-- Trend: Accelerating
+- Last 5 plans: 04-02, 04-03, 04-04, 05-01
+- Trend: Steady
 
 ## Accumulated Context
 
@@ -79,6 +80,10 @@ Recent decisions affecting current work:
 - Optional heads gated by constructor bool, absent from output dict when disabled
 - predictor.yaml completed with features_per_level=4, n_horizons=4, max_seq_len=512
 - __init__.py re-exports all 6 public classes (DualAttentionTransformer, DeepLOB, LinearBaseline, FocalLoss, SpatialAttentionBlock, TemporalAttentionBlock)
+- LOBDataset returns 2-tuple (features, labels) when vpin_col=None, 3-tuple when set — backward compatible
+- Trainer passes explicit 40 book columns (BOOK_FEATURE_COLS) to LOBDataset to avoid derived features
+- Model output: dict for DualAttentionTransformer, plain Tensor for baselines; _extract_logits() handles both
+- Class weights computed as inverse frequency; pin_memory=False for MPS/CPU
 
 ### Pending Todos
 
@@ -91,5 +96,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-20
-Stopped at: Phase 4 complete — all predictor components tested and exported
-Resume file: .planning/phases/04-predictor-architecture/04-04-SUMMARY.md
+Stopped at: Phase 5 Wave 1 complete — executing Wave 2 (05-02, 05-03)
+Resume file: .planning/phases/05-predictor-training/05-01-SUMMARY.md
