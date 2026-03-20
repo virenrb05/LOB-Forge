@@ -9,7 +9,10 @@ predictor:
   feedforward_dim: 128
   dropout: 0.1
   n_levels: 10
+  features_per_level: 4
   n_classes: 3
+  n_horizons: 4
+  max_seq_len: 512
   focal_loss_gamma: 2.0
   vpin_head: true
   vpin_loss_weight: 0.1
