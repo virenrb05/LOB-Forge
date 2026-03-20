@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 3 of 10 (Data Preprocessing)
-Plan: 03-03 complete (temporal splits with purge gaps)
+Plan: 03-01 complete (LOB derived features)
 Status: In progress
-Last activity: 2026-03-19 — Plan 03-03 executed (temporal_split)
+Last activity: 2026-03-19 — Plan 03-01 executed (6 feature functions with VPIN)
 
 Progress: ██░░░░░░░░ 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
+- Total plans completed: 8
 - Average duration: ~3.5 min
-- Total execution time: ~21 min
+- Total execution time: ~28 min
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: ██░░░░░░░░ 20%
 |-------|-------|-------|----------|
 | 01-scaffold | 2/2 | ~10 min | ~5 min |
 | 02-data-ingestion | 3/3 | ~8 min | ~2.7 min |
-| 03-data-preprocessing | 1/5 | ~3 min | ~3 min |
+| 03-data-preprocessing | 3/5 | ~10 min | ~3.3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02, 02-01, 02-03, 02-02, 03-03
+- Last 5 plans: 02-03, 02-02, 03-03, 03-02, 03-01
 - Trend: Accelerating
 
 ## Accumulated Context
@@ -54,6 +54,12 @@ Recent decisions affecting current work:
 - WebSocket recorder uses async internally, sync API via asyncio.run()
 - temporal_split returns index arrays (not data slices); empty np.ndarray for segments that don't fit
 - purge_gap defaults to 0 in function; configs/data.yaml sets 10 for production
+- Cumsum trick for O(n) future mean: cs = concat([0], cumsum(mid)), future_mean = (cs[t+h+1] - cs[t+1]) / h
+- Causality boundary: label at row t uses mid[t+1..t+h], so modifying row k affects labels at rows [k-h, k-1]
+- Label dtype float64 to support NaN; values in {0.0, 1.0, 2.0, NaN}
+- Feature functions use epsilon (1e-12) denominator guard for division-by-zero protection
+- VPIN uses bulk volume classification with scipy.stats.norm.cdf and rolling sigma window of 50
+- VPIN forward-fills for non-trade rows, clips to [0, 1]
 
 ### Pending Todos
 
@@ -66,5 +72,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: Plan 03-03 complete, continuing Phase 3
-Resume file: .planning/phases/03-data-preprocessing/03-03-SUMMARY.md
+Stopped at: Plan 03-01 complete, continuing Phase 3
+Resume file: .planning/phases/03-data-preprocessing/03-01-SUMMARY.md
