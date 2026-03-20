@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 4 in progress — predictor architecture
+**Current focus:** Phase 4 complete — predictor architecture done, ready for Phase 5
 
 ## Current Position
 
-Phase: 4 of 10 (Predictor Architecture) — IN PROGRESS
-Plan: 04-03 complete (DualAttentionTransformer & FocalLoss)
-Status: Plan 04-03 done, continuing phase 4
-Last activity: 2026-03-20 — DualAttentionTransformer and FocalLoss implemented
+Phase: 4 of 10 (Predictor Architecture) — COMPLETE
+Plan: 04-04 complete (architecture tests, exports, config)
+Status: Phase 4 done, ready for Phase 5 (training loop)
+Last activity: 2026-03-20 — Predictor test suite, __init__.py exports, config finalized
 
-Progress: ███▒░░░░░░ 35%
+Progress: ████░░░░░░ 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
-- Average duration: ~3.1 min
-- Total execution time: ~46 min
+- Total plans completed: 16
+- Average duration: ~3.0 min
+- Total execution time: ~48 min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: ███▒░░░░░░ 35%
 | 01-scaffold | 2/2 | ~10 min | ~5 min |
 | 02-data-ingestion | 3/3 | ~8 min | ~2.7 min |
 | 03-data-preprocessing | 7/7 | ~22 min | ~3.1 min |
-| 04-predictor-architecture | 3/? | ~6 min | ~2 min |
+| 04-predictor-architecture | 4/4 | ~8 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-07, 04-01, 04-02, 04-03
+- Last 5 plans: 04-01, 04-02, 04-03, 04-04
 - Trend: Accelerating
 
 ## Accumulated Context
@@ -77,6 +77,8 @@ Recent decisions affecting current work:
 - DualAttentionTransformer input reshape: .view(B, T, 4, 10).permute(0, 1, 3, 2) for per-level grouping
 - Model forward returns dict[str, Tensor] with logits, embedding, and optional vpin
 - Optional heads gated by constructor bool, absent from output dict when disabled
+- predictor.yaml completed with features_per_level=4, n_horizons=4, max_seq_len=512
+- __init__.py re-exports all 6 public classes (DualAttentionTransformer, DeepLOB, LinearBaseline, FocalLoss, SpatialAttentionBlock, TemporalAttentionBlock)
 
 ### Pending Todos
 
@@ -89,5 +91,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-20
-Stopped at: Phase 4, plan 03 complete — DualAttentionTransformer and FocalLoss implemented
-Resume file: .planning/phases/04-predictor-architecture/04-03-SUMMARY.md
+Stopped at: Phase 4 complete — all predictor components tested and exported
+Resume file: .planning/phases/04-predictor-architecture/04-04-SUMMARY.md
