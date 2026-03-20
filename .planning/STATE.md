@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 3 of 10 (Data Preprocessing)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-03-19 — Phase 2 Data Ingestion verified and complete
+Plan: 03-03 complete (temporal splits with purge gaps)
+Status: In progress
+Last activity: 2026-03-19 — Plan 03-03 executed (temporal_split)
 
 Progress: ██░░░░░░░░ 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: ~4 min
-- Total execution time: ~18 min
+- Total plans completed: 6
+- Average duration: ~3.5 min
+- Total execution time: ~21 min
 
 **By Phase:**
 
@@ -29,9 +29,10 @@ Progress: ██░░░░░░░░ 20%
 |-------|-------|-------|----------|
 | 01-scaffold | 2/2 | ~10 min | ~5 min |
 | 02-data-ingestion | 3/3 | ~8 min | ~2.7 min |
+| 03-data-preprocessing | 1/5 | ~3 min | ~3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01, 01-02, 02-01, 02-03, 02-02
+- Last 5 plans: 01-02, 02-01, 02-03, 02-02, 03-03
 - Trend: Accelerating
 
 ## Accumulated Context
@@ -51,6 +52,8 @@ Recent decisions affecting current work:
 - Trade events from LOBSTER message file: event_types 4, 5 are executions
 - Historical Bybit archives provide trade data only; book columns NaN with warning
 - WebSocket recorder uses async internally, sync API via asyncio.run()
+- temporal_split returns index arrays (not data slices); empty np.ndarray for segments that don't fit
+- purge_gap defaults to 0 in function; configs/data.yaml sets 10 for production
 
 ### Pending Todos
 
@@ -63,5 +66,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-19
-Stopped at: Phase 2 verified and complete, ready for Phase 3
-Resume file: .planning/phases/02-data-ingestion/02-VERIFICATION.md
+Stopped at: Plan 03-03 complete, continuing Phase 3
+Resume file: .planning/phases/03-data-preprocessing/03-03-SUMMARY.md
