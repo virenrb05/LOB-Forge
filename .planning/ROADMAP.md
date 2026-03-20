@@ -13,7 +13,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
 - [x] **Phase 1: Scaffold** - Project structure, Hydra configs, linting, MPS validation
 - [x] **Phase 2: Data Ingestion** - Bybit downloader, LOBSTER adapter, unified Parquet schema
 - [ ] **Phase 3: Data Preprocessing** - Features, labeling, normalization, splits, PyTorch Datasets
-- [ ] **Phase 4: Predictor Architecture** - TLOB transformer, DeepLOB baseline, focal loss
+- [x] **Phase 4: Predictor Architecture** - TLOB transformer, DeepLOB baseline, focal loss
 - [ ] **Phase 5: Predictor Training** - Multi-horizon prediction, VPIN head, walk-forward eval, wandb
 - [ ] **Phase 6: Generator Core** - Conditional DDPM/DDIM, 1D U-Net with AdaLN, EMA
 - [ ] **Phase 7: Generator Validation** - Stylized facts, regime conditioning, LOB-Bench metrics
@@ -72,7 +72,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
   4. Focal loss computes correctly with class weights (verified against manual calculation)
   5. All models train deterministically with fixed seeds on MPS
 **Research**: Unlikely (TLOB has official repo with working code)
-**Plans**: TBD
+**Plans**: 4 (04-01, 04-02, 04-03, 04-04)
 
 ### Phase 5: Predictor Training
 **Goal**: Trained predictor beats baselines on held-out data with proper evaluation
@@ -162,7 +162,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Scaffold | 2/2 | Complete | 2026-03-19 |
 | 2. Data Ingestion | 3/3 | Complete | 2026-03-19 |
 | 3. Data Preprocessing | 7/7 | Complete | 2026-03-20 |
-| 4. Predictor Architecture | 0/TBD | Not started | - |
+| 4. Predictor Architecture | 4/4 | Complete | 2026-03-20 |
 | 5. Predictor Training | 0/TBD | Not started | - |
 | 6. Generator Core | 0/TBD | Not started | - |
 | 7. Generator Validation | 0/TBD | Not started | - |

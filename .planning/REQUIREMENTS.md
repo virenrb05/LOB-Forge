@@ -23,16 +23,16 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Predictor (Module A)
 
-- [ ] **PRED-01**: Dual-attention transformer (spatial across levels, temporal across time) — TLOB architecture
-- [ ] **PRED-02**: DeepLOB baseline (CNN + Inception + LSTM) for comparison
-- [ ] **PRED-03**: Linear/logistic regression baseline as performance floor
-- [ ] **PRED-04**: Focal loss with class-weight rebalancing for imbalanced labels
+- [x] **PRED-01**: Dual-attention transformer (spatial across levels, temporal across time) — TLOB architecture
+- [x] **PRED-02**: DeepLOB baseline (CNN + Inception + LSTM) for comparison
+- [x] **PRED-03**: Linear/logistic regression baseline as performance floor
+- [x] **PRED-04**: Focal loss with class-weight rebalancing for imbalanced labels
 - [ ] **PRED-05**: Multi-horizon prediction (1s, 2s, 5s, 10s)
 - [ ] **PRED-06**: Auxiliary VPIN regression head (multi-task learning)
 - [ ] **PRED-07**: F1, precision, recall per class (weighted and macro)
 - [ ] **PRED-08**: Walk-forward / rolling window evaluation (at least 2 windows)
 - [ ] **PRED-09**: wandb experiment tracking with logged metrics and configs
-- [ ] **PRED-10**: Reproducibility: fixed seeds, deterministic training, config-driven
+- [x] **PRED-10**: Reproducibility: fixed seeds, deterministic training, config-driven
 
 ### Generator (Module B)
 
