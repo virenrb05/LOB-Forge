@@ -27,11 +27,11 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **PRED-02**: DeepLOB baseline (CNN + Inception + LSTM) for comparison
 - [x] **PRED-03**: Linear/logistic regression baseline as performance floor
 - [x] **PRED-04**: Focal loss with class-weight rebalancing for imbalanced labels
-- [ ] **PRED-05**: Multi-horizon prediction (1s, 2s, 5s, 10s)
-- [ ] **PRED-06**: Auxiliary VPIN regression head (multi-task learning)
-- [ ] **PRED-07**: F1, precision, recall per class (weighted and macro)
-- [ ] **PRED-08**: Walk-forward / rolling window evaluation (at least 2 windows)
-- [ ] **PRED-09**: wandb experiment tracking with logged metrics and configs
+- [x] **PRED-05**: Multi-horizon prediction (1s, 2s, 5s, 10s)
+- [x] **PRED-06**: Auxiliary VPIN regression head (multi-task learning)
+- [x] **PRED-07**: F1, precision, recall per class (weighted and macro)
+- [x] **PRED-08**: Walk-forward / rolling window evaluation (at least 2 windows)
+- [x] **PRED-09**: wandb experiment tracking with logged metrics and configs
 - [x] **PRED-10**: Reproducibility: fixed seeds, deterministic training, config-driven
 
 ### Generator (Module B)
@@ -132,11 +132,11 @@ Which phases cover which requirements. Updated by create-roadmap.
 | PRED-02 | Phase 4 | Pending |
 | PRED-03 | Phase 4 | Pending |
 | PRED-04 | Phase 4 | Pending |
-| PRED-05 | Phase 5 | Pending |
-| PRED-06 | Phase 5 | Pending |
-| PRED-07 | Phase 5 | Pending |
-| PRED-08 | Phase 5 | Pending |
-| PRED-09 | Phase 5 | Pending |
+| PRED-05 | Phase 5 | Complete |
+| PRED-06 | Phase 5 | Complete |
+| PRED-07 | Phase 5 | Complete |
+| PRED-08 | Phase 5 | Complete |
+| PRED-09 | Phase 5 | Complete |
 | PRED-10 | Phase 4 | Pending |
 | GEN-01 | Phase 6 | Pending |
 | GEN-02 | Phase 6 | Pending |

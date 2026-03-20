@@ -14,7 +14,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
 - [x] **Phase 2: Data Ingestion** - Bybit downloader, LOBSTER adapter, unified Parquet schema
 - [ ] **Phase 3: Data Preprocessing** - Features, labeling, normalization, splits, PyTorch Datasets
 - [x] **Phase 4: Predictor Architecture** - TLOB transformer, DeepLOB baseline, focal loss
-- [ ] **Phase 5: Predictor Training** - Multi-horizon prediction, VPIN head, walk-forward eval, wandb
+- [x] **Phase 5: Predictor Training** - Multi-horizon prediction, VPIN head, walk-forward eval, wandb
 - [ ] **Phase 6: Generator Core** - Conditional DDPM/DDIM, 1D U-Net with AdaLN, EMA
 - [ ] **Phase 7: Generator Validation** - Stylized facts, regime conditioning, LOB-Bench metrics
 - [ ] **Phase 8: Execution Environment** - Gymnasium LOB env, action space, cost model
@@ -85,7 +85,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
   4. TLOB F1 exceeds DeepLOB F1 on at least one horizon
   5. All experiments logged to wandb with metrics, configs, and model checkpoints
 **Research**: Unlikely (standard training loop patterns)
-**Plans**: TBD
+**Plans**: 3 (05-01, 05-02, 05-03)
 
 ### Phase 6: Generator Core
 **Goal**: Conditional diffusion model generates LOB sequences from noise
@@ -163,7 +163,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 2. Data Ingestion | 3/3 | Complete | 2026-03-19 |
 | 3. Data Preprocessing | 7/7 | Complete | 2026-03-20 |
 | 4. Predictor Architecture | 4/4 | Complete | 2026-03-20 |
-| 5. Predictor Training | 0/TBD | Not started | - |
+| 5. Predictor Training | 3/3 | Complete | 2026-03-20 |
 | 6. Generator Core | 0/TBD | Not started | - |
 | 7. Generator Validation | 0/TBD | Not started | - |
 | 8. Execution Environment | 0/TBD | Not started | - |

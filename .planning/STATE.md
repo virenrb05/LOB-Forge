@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 5 in progress — predictor training infrastructure
+**Current focus:** Phase 5 complete — predictor training infrastructure done, ready for Phase 6
 
 ## Current Position
 
-Phase: 5 of 10 (Predictor Training) — IN PROGRESS
-Plan: 05-01 complete (metrics + training loop), executing Wave 2 (05-02, 05-03)
-Status: Wave 1 done, Wave 2 next
-Last activity: 2026-03-20 — Training loop, metrics, model factory, wandb integration
+Phase: 5 of 10 (Predictor Training) — COMPLETE
+Plan: 05-03 complete (all plans done, phase verified)
+Status: Phase 5 done, ready for Phase 6 (Generator Core)
+Last activity: 2026-03-20 — Walk-forward eval, Hydra CLI, model comparison, test suite
 
-Progress: ████▌░░░░░ 45%
+Progress: █████░░░░░ 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
-- Average duration: ~3.1 min
-- Total execution time: ~53 min
+- Total plans completed: 19
+- Average duration: ~3.0 min
+- Total execution time: ~57 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: ████▌░░░░░ 45%
 | 02-data-ingestion | 3/3 | ~8 min | ~2.7 min |
 | 03-data-preprocessing | 7/7 | ~22 min | ~3.1 min |
 | 04-predictor-architecture | 4/4 | ~8 min | ~2 min |
-| 05-predictor-training | 1/3 | ~5 min | ~5 min |
+| 05-predictor-training | 3/3 | ~9 min | ~3 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-02, 04-03, 04-04, 05-01
+- Last 5 plans: 04-04, 05-01, 05-02, 05-03
 - Trend: Steady
 
 ## Accumulated Context
@@ -96,5 +96,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-20
-Stopped at: Phase 5 Wave 1 complete — executing Wave 2 (05-02, 05-03)
-Resume file: .planning/phases/05-predictor-training/05-01-SUMMARY.md
+Stopped at: Phase 5 complete — all training infrastructure verified
+Resume file: .planning/phases/05-predictor-training/VERIFICATION.md
