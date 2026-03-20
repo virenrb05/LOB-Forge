@@ -210,18 +210,116 @@ def compute_vpin(df: pd.DataFrame, n_buckets: int = 50) -> pd.Series:
     return vpin_series
 
 
+def compute_ofi(df: pd.DataFrame) -> pd.Series:
+    """Compute level-1 Order Flow Imbalance (OFI).
+
+    Measures *changes* in order book quantities between consecutive snapshots,
+    following Cont, Kukanov & Stoikov (2014).
+
+    Formula::
+
+        delta_bid_size = bid_size_1 - bid_size_1.shift(1)
+        delta_ask_size = ask_size_1 - ask_size_1.shift(1)
+        OFI_t = delta_bid_size * I(bid_price_1 >= prev_bid_price_1)
+              - delta_ask_size * I(ask_price_1 <= prev_ask_price_1)
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Must contain bid_price_1, bid_size_1, ask_price_1, ask_size_1.
+
+    Returns
+    -------
+    pd.Series
+        OFI series named ``"ofi"``.  First row is NaN.
+    """
+    bp = df[BID_PRICE_COLS[0]]
+    bs = df[BID_SIZE_COLS[0]]
+    ap = df[ASK_PRICE_COLS[0]]
+    as_ = df[ASK_SIZE_COLS[0]]
+
+    delta_bs = bs - bs.shift(1)
+    delta_as = as_ - as_.shift(1)
+
+    bid_indicator = (bp >= bp.shift(1)).astype(float)
+    ask_indicator = (ap <= ap.shift(1)).astype(float)
+
+    ofi = delta_bs * bid_indicator - delta_as * ask_indicator
+
+    # First row has no previous snapshot
+    ofi.iloc[0] = np.nan
+
+    ofi.name = "ofi"
+    return ofi
+
+
+def compute_mlofi(
+    df: pd.DataFrame, levels: int = 10, decay: float = 0.5
+) -> pd.Series:
+    """Compute Multi-Level Order Flow Imbalance (MLOFI).
+
+    Extends OFI across multiple book levels with exponential decay weighting.
+
+    For each level *i* (1..levels)::
+
+        ofi_i = delta(bid_size_i) * I(bid_price_i >= prev_bid_price_i)
+              - delta(ask_size_i) * I(ask_price_i <= prev_ask_price_i)
+
+    ``MLOFI = sum(decay^(i-1) * ofi_i for i in 1..levels)``
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Must contain bid/ask price and size columns for the requested levels.
+    levels : int
+        Number of book levels to aggregate.  Default 10.
+    decay : float
+        Exponential decay factor.  Default 0.5.
+
+    Returns
+    -------
+    pd.Series
+        MLOFI series named ``"mlofi"``.  First row is NaN.
+    """
+    mlofi = pd.Series(0.0, index=df.index, dtype=float)
+
+    for i in range(levels):
+        bp = df[BID_PRICE_COLS[i]]
+        bs = df[BID_SIZE_COLS[i]]
+        ap = df[ASK_PRICE_COLS[i]]
+        as_ = df[ASK_SIZE_COLS[i]]
+
+        delta_bs = bs - bs.shift(1)
+        delta_as = as_ - as_.shift(1)
+
+        bid_indicator = (bp >= bp.shift(1)).astype(float)
+        ask_indicator = (ap <= ap.shift(1)).astype(float)
+
+        ofi_i = delta_bs * bid_indicator - delta_as * ask_indicator
+        weight = decay ** i
+        mlofi = mlofi + weight * ofi_i
+
+    # First row has no previous snapshot
+    mlofi.iloc[0] = np.nan
+
+    mlofi.name = "mlofi"
+    return mlofi
+
+
 def compute_all_features(
     df: pd.DataFrame, lookbacks: list[int] | None = None
 ) -> pd.DataFrame:
-    """Compute all 6 derived features and return augmented DataFrame.
+    """Compute all 8 derived features and return augmented DataFrame.
 
-    Adds 18 new columns:
+    Adds 20 new columns:
     - 4 mid-return columns (mid_return_1, _5, _10, _50)
     - 1 order_imbalance
     - 1 microprice
     - 10 depth_imb columns (depth_imb_1 through depth_imb_10)
     - 1 spread_bps
     - 1 vpin
+    - 1 ofi
+    - 1 mlofi
 
     Parameters
     ----------
@@ -233,7 +331,7 @@ def compute_all_features(
     Returns
     -------
     pd.DataFrame
-        Original DataFrame augmented with 18 feature columns.
+        Original DataFrame augmented with 20 feature columns.
     """
     result = df.copy()
 
@@ -258,5 +356,11 @@ def compute_all_features(
 
     # VPIN
     result["vpin"] = compute_vpin(df).values
+
+    # OFI
+    result["ofi"] = compute_ofi(df).values
+
+    # MLOFI
+    result["mlofi"] = compute_mlofi(df).values
 
     return result
