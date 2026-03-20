@@ -59,7 +59,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
   4. Train/val/test splits are temporal with purge gaps (no data leakage — unit tested)
   5. LOBDataset and LOBSequenceDataset load batches correctly on MPS device
 **Research**: Unlikely (well-documented in LOBFrame, LOBCAST references)
-**Plans**: TBD
+**Plans**: 7 (03-01, 03-02, 03-03, 03-04, 03-05, 03-06, 03-07)
 
 ### Phase 4: Predictor Architecture
 **Goal**: TLOB and baseline models forward-pass correctly on LOB data
@@ -161,7 +161,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Scaffold | 2/2 | Complete | 2026-03-19 |
 | 2. Data Ingestion | 3/3 | Complete | 2026-03-19 |
-| 3. Data Preprocessing | 0/TBD | Not started | - |
+| 3. Data Preprocessing | 7/7 | Complete | 2026-03-20 |
 | 4. Predictor Architecture | 0/TBD | Not started | - |
 | 5. Predictor Training | 0/TBD | Not started | - |
 | 6. Generator Core | 0/TBD | Not started | - |

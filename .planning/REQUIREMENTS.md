@@ -12,14 +12,14 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **DATA-01**: Bybit BTC-USDT downloader (WebSocket recorder + historical archives)
 - [ ] **DATA-02**: LOBSTER adapter for NASDAQ equity data
 - [ ] **DATA-03**: Unified Parquet schema (10-level LOB snapshots, 40 features per snapshot)
-- [ ] **DATA-04**: Rolling z-score normalization (per-feature, rolling window, non-causal)
-- [ ] **DATA-05**: Mid-price movement labeling (3-class: up/down/stationary, smoothed future mid)
-- [ ] **DATA-06**: Multi-level order flow imbalance (OFI/MLOFI) features
-- [ ] **DATA-07**: VPIN (Volume-Synchronized Probability of Informed Trading) derived feature
-- [ ] **DATA-08**: Microprice (volume-weighted mid using best bid/ask sizes)
-- [ ] **DATA-09**: Strict temporal train/val/test split with purge gaps (no lookahead bias)
-- [ ] **DATA-10**: Multiple prediction horizons (1s, 2s, 5s, 10s)
-- [ ] **DATA-11**: PyTorch Datasets: LOBDataset (predictor) and LOBSequenceDataset (generator)
+- [x] **DATA-04**: Rolling z-score normalization (per-feature, rolling window, non-causal)
+- [x] **DATA-05**: Mid-price movement labeling (3-class: up/down/stationary, smoothed future mid)
+- [x] **DATA-06**: Multi-level order flow imbalance (OFI/MLOFI) features
+- [x] **DATA-07**: VPIN (Volume-Synchronized Probability of Informed Trading) derived feature
+- [x] **DATA-08**: Microprice (volume-weighted mid using best bid/ask sizes)
+- [x] **DATA-09**: Strict temporal train/val/test split with purge gaps (no lookahead bias)
+- [x] **DATA-10**: Multiple prediction horizons (1s, 2s, 5s, 10s)
+- [x] **DATA-11**: PyTorch Datasets: LOBDataset (predictor) and LOBSequenceDataset (generator)
 
 ### Predictor (Module A)
 
