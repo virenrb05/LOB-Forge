@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 6 in progress — generator core building blocks
+**Current focus:** Phase 6 complete — generator core fully wired and tested
 
 ## Current Position
 
-Phase: 6 of 10 (Generator Core) — IN PROGRESS
-Plan: 06-04 complete (DiffusionModel with DDPM/DDIM sampling)
-Status: Plan 06-04 done, ready for next plan
-Last activity: 2026-03-20 — DiffusionModel composing schedule + UNet + conditioning
+Phase: 6 of 10 (Generator Core) — COMPLETE
+Plan: 06-05 complete (config, exports, training loop, tests)
+Status: Phase 06 done, ready for next phase
+Last activity: 2026-03-21 — Generator config, exports, training loop, 27-test suite
 
-Progress: █████▌░░░░ 57%
+Progress: ██████░░░░ 62%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 23
-- Average duration: ~2.9 min
-- Total execution time: ~67 min
+- Total plans completed: 24
+- Average duration: ~3.0 min
+- Total execution time: ~72 min
 
 **By Phase:**
 
@@ -32,10 +32,10 @@ Progress: █████▌░░░░ 57%
 | 03-data-preprocessing | 7/7 | ~22 min | ~3.1 min |
 | 04-predictor-architecture | 4/4 | ~8 min | ~2 min |
 | 05-predictor-training | 3/3 | ~9 min | ~3 min |
-| 06-generator-core | 4/? | ~10 min | ~2.5 min |
+| 06-generator-core | 5/5 | ~15 min | ~3.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-03, 06-01, 06-02, 06-03, 06-04
+- Last 5 plans: 06-01, 06-02, 06-03, 06-04, 06-05
 - Trend: Steady
 
 ## Accumulated Context
@@ -96,6 +96,9 @@ Recent decisions affecting current work:
 - DiffusionModel composes schedule + UNet + conditioning; input (B,T,C) permuted to (B,C,T) for UNet, back on output
 - DDIM uses torch.linspace timestep subsequence; eta=0 is deterministic
 - generate() convenience defaults to DDIM for practical inference speed
+- No early stopping for diffusion training — loss behavior differs from classification
+- train_generator(cfg) returns Path to final checkpoint; uses DDIM 10 steps for periodic samples
+- Generator __init__.py re-exports 9 public symbols (all classes + train_generator)
 
 ### Pending Todos
 
@@ -107,6 +110,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20
-Stopped at: Plan 06-04 complete — DiffusionModel with DDPM/DDIM sampling
-Resume file: .planning/phases/06-generator-core/06-04-SUMMARY.md
+Last session: 2026-03-21
+Stopped at: Plan 06-05 complete — Phase 06 (Generator Core) fully wired and tested
+Resume file: .planning/phases/06-generator-core/06-05-SUMMARY.md
