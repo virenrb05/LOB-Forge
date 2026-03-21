@@ -36,11 +36,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Generator (Module B)
 
-- [ ] **GEN-01**: Cosine noise schedule (Nichol & Dhariwal 2021)
-- [ ] **GEN-02**: 1D U-Net denoiser with AdaLN conditioning (DiT-style)
-- [ ] **GEN-03**: Conditioning on diffusion timestep + volatility regime + time-of-day
-- [ ] **GEN-04**: DDPM sampling (1000-step) and DDIM sampling (50-step)
-- [ ] **GEN-05**: EMA model weights
+- [x] **GEN-01**: Cosine noise schedule (Nichol & Dhariwal 2021)
+- [x] **GEN-02**: 1D U-Net denoiser with AdaLN conditioning (DiT-style)
+- [x] **GEN-03**: Conditioning on diffusion timestep + volatility regime + time-of-day
+- [x] **GEN-04**: DDPM sampling (1000-step) and DDIM sampling (50-step)
+- [x] **GEN-05**: EMA model weights
 - [ ] **GEN-06**: 7 stylized-fact validation tests (return distribution, vol clustering, bid-ask bounce, spread CDF, book shape, market impact concavity, summary figure)
 - [ ] **GEN-07**: Regime-conditioned generation (volatility, trend, liquidity regimes)
 - [ ] **GEN-08**: LOB-Bench quantitative evaluation (Wasserstein distances, discriminator scores, conditional statistics)
@@ -138,11 +138,11 @@ Which phases cover which requirements. Updated by create-roadmap.
 | PRED-08 | Phase 5 | Complete |
 | PRED-09 | Phase 5 | Complete |
 | PRED-10 | Phase 4 | Pending |
-| GEN-01 | Phase 6 | Pending |
-| GEN-02 | Phase 6 | Pending |
-| GEN-03 | Phase 6 | Pending |
-| GEN-04 | Phase 6 | Pending |
-| GEN-05 | Phase 6 | Pending |
+| GEN-01 | Phase 6 | Complete |
+| GEN-02 | Phase 6 | Complete |
+| GEN-03 | Phase 6 | Complete |
+| GEN-04 | Phase 6 | Complete |
+| GEN-05 | Phase 6 | Complete |
 | GEN-06 | Phase 7 | Pending |
 | GEN-07 | Phase 7 | Pending |
 | GEN-08 | Phase 7 | Pending |

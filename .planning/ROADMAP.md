@@ -99,7 +99,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
   5. EMA model weights update correctly and can be loaded for inference
 **Research**: Likely (FiLM conditioning on predictor embeddings is frontier)
 **Research topics**: Diffusion-TS architecture, FiLM modulation dimensionality, predictor embedding extraction, AdaLN vs cross-attention conditioning
-**Plans**: TBD
+**Plans**: 5 (06-01, 06-02, 06-03, 06-04, 06-05)
 
 ### Phase 7: Generator Validation
 **Goal**: Generated LOB sequences are statistically indistinguishable from real data
@@ -164,7 +164,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Data Preprocessing | 7/7 | Complete | 2026-03-20 |
 | 4. Predictor Architecture | 4/4 | Complete | 2026-03-20 |
 | 5. Predictor Training | 3/3 | Complete | 2026-03-20 |
-| 6. Generator Core | 0/TBD | Not started | - |
+| 6. Generator Core | 5/5 | Complete | 2026-03-20 |
 | 7. Generator Validation | 0/TBD | Not started | - |
 | 8. Execution Environment | 0/TBD | Not started | - |
 | 9. Execution Agent | 0/TBD | Not started | - |
