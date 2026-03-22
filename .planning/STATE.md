@@ -147,6 +147,11 @@ Recent decisions affecting current work:
 - compare_to_baselines() returns dict with 5 agent entries + dqn_beats_twap bool (strict < on mean_cost)
 - VWAPBaseline instantiated with horizon=env.horizon to pre-compute correct schedule
 - ACTION_NAMES still aliased as LOBExecutionEnv.ACTION_NAMES in __init__.py (not module-level in environment.py)
+- compute_implementation_shortfall sets slippage_vs_twap=NaN; caller fills via compute_slippage_vs_twap(agent, twap)
+- run_backtest lazy-imports torch only for DQN checkpoint branch; delegates to evaluate_agent() when seed_offset==0
+- training_loss_curve plot emits a placeholder when checkpoints/training_log.csv is absent (safe for CI)
+- generate_all_plots creates output_dir with mkdir(parents=True, exist_ok=True); returns list[Path] of 6 PNG files
+- matplotlib.use("Agg") set at module level in plots.py for non-interactive/CI-safe rendering
 - IS Sharpe uses ddof=0 (population std) in metrics.py; test values for [10,20,30] are std≈8.165, sharpe≈2.449
 - MockEnv pattern for executor tests: minimal class with action_space, seq_len, horizon, inventory; terminates after first step
 - test_eval_metrics.py used instead of test_metrics.py (which already contains predictor classification metric tests)
