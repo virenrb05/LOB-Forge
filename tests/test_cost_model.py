@@ -1,10 +1,10 @@
 """RED-GREEN-REFACTOR tests for CostModel — spread + fee + market impact."""
 
 import math
+
 import pytest
 
 from lob_forge.executor.cost_model import CostModel
-
 
 # ---------------------------------------------------------------------------
 # RED: These tests were written before any implementation existed.
