@@ -99,9 +99,7 @@ def evaluate_agent(
                 break
 
         executed = env.inventory - info["remaining"]
-        exec_vwap_approx = arrival_price + (
-            info["episode_cost"] / max(executed, 1e-9)
-        )
+        exec_vwap_approx = arrival_price + (info["episode_cost"] / max(executed, 1e-9))
         is_shortfall = (exec_vwap_approx - arrival_price) * env.inventory
 
         results.append(
