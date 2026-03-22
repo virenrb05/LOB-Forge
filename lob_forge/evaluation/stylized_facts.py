@@ -148,10 +148,7 @@ def volatility_clustering_test(
     mean_synth = float(np.mean(acf_synth))
 
     # Avoid division by zero when real mean ACF is zero
-    if mean_real == 0:
-        ratio = 0.0
-    else:
-        ratio = mean_synth / mean_real
+    ratio = 0.0 if mean_real == 0 else mean_synth / mean_real
 
     passed = mean_synth > 0 and 0.3 <= ratio <= 3.0
 
