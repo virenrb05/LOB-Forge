@@ -19,6 +19,8 @@ from scipy.stats import wasserstein_distance
 __all__ = [
     "compute_wasserstein_metrics",
     "compute_conditional_stats",
+    "train_discriminator",
+    "run_lob_bench",
 ]
 
 logger = logging.getLogger(__name__)
@@ -171,4 +173,177 @@ def compute_conditional_stats(
         results[str(regime)] = regime_stats
 
     results["mean_relative_error"] = float(np.mean(all_errors)) if all_errors else 0.0
+    return results
+
+
+# ---------------------------------------------------------------------------
+# 3. MLP Discriminator
+# ---------------------------------------------------------------------------
+
+
+def train_discriminator(
+    real: NDArray[np.floating],
+    synthetic: NDArray[np.floating],
+    hidden_dim: int = 128,
+    epochs: int = 50,
+    lr: float = 1e-3,
+    seed: int = 42,
+) -> dict[str, float]:
+    """Train an MLP to distinguish real from synthetic data.
+
+    A score near 0.5 accuracy indicates the generator produces realistic data.
+
+    Parameters
+    ----------
+    real, synthetic : ndarray of shape ``(N, C)`` or ``(N, T, C)``
+        Real and synthetic LOB data.  3-D inputs are flattened to 2-D.
+    hidden_dim : int
+        Hidden layer width.
+    epochs : int
+        Training epochs.
+    lr : float
+        Adam learning rate.
+    seed : int
+        Random seed for reproducibility.
+
+    Returns
+    -------
+    dict[str, float]
+        ``accuracy`` (test), ``auc`` (ROC AUC on test), ``train_loss``.
+    """
+    import torch
+    import torch.nn as nn
+    from sklearn.metrics import roc_auc_score
+
+    # Flatten 3-D inputs
+    if real.ndim == 3:
+        real = real.reshape(real.shape[0], -1)
+    if synthetic.ndim == 3:
+        synthetic = synthetic.reshape(synthetic.shape[0], -1)
+
+    # Determinism
+    rng = np.random.default_rng(seed)
+    torch.manual_seed(seed)
+
+    input_dim = real.shape[1]
+
+    # Labels: real=1, synthetic=0
+    X = np.concatenate([real, synthetic], axis=0).astype(np.float32)
+    y = np.concatenate(
+        [
+            np.ones(len(real), dtype=np.float32),
+            np.zeros(len(synthetic), dtype=np.float32),
+        ]
+    )
+
+    # 80/20 deterministic split
+    n = len(X)
+    idx = rng.permutation(n)
+    split = int(0.8 * n)
+    train_idx, test_idx = idx[:split], idx[split:]
+
+    X_train, y_train = torch.tensor(X[train_idx]), torch.tensor(y[train_idx]).unsqueeze(
+        1
+    )
+    X_test, y_test = torch.tensor(X[test_idx]), torch.tensor(y[test_idx]).unsqueeze(1)
+
+    # MLP
+    model = nn.Sequential(
+        nn.Linear(input_dim, hidden_dim),
+        nn.ReLU(),
+        nn.Linear(hidden_dim, 64),
+        nn.ReLU(),
+        nn.Linear(64, 1),
+        nn.Sigmoid(),
+    )
+
+    criterion = nn.BCELoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
+    # Train
+    model.train()
+    train_loss = 0.0
+    for _ in range(epochs):
+        optimizer.zero_grad()
+        out = model(X_train)
+        loss = criterion(out, y_train)
+        loss.backward()
+        optimizer.step()
+        train_loss = float(loss.item())
+
+    # Evaluate
+    model.eval()
+    with torch.no_grad():
+        probs = model(X_test).numpy()
+
+    preds = (probs >= 0.5).astype(np.float32)
+    y_test_np = y_test.numpy()
+    accuracy = float(np.mean(preds == y_test_np))
+
+    # AUC — handle degenerate case
+    unique_labels = np.unique(y_test_np)
+    auc = 0.5 if len(unique_labels) < 2 else float(roc_auc_score(y_test_np, probs))
+
+    return {"accuracy": accuracy, "auc": auc, "train_loss": train_loss}
+
+
+# ---------------------------------------------------------------------------
+# 4. Orchestrator
+# ---------------------------------------------------------------------------
+
+
+def run_lob_bench(
+    real: NDArray[np.floating],
+    synthetic: NDArray[np.floating],
+    real_regimes: NDArray[np.integer] | None = None,
+    synthetic_regimes: NDArray[np.integer] | None = None,
+) -> dict[str, Any]:
+    """Run the full LOB-Bench evaluation suite.
+
+    Parameters
+    ----------
+    real, synthetic : ndarray
+        LOB data arrays (2-D or 3-D).
+    real_regimes, synthetic_regimes : ndarray or None
+        Optional regime labels for conditional statistics.
+
+    Returns
+    -------
+    dict[str, Any]
+        Namespaced metrics: ``wasserstein/*``, ``discriminator/*``,
+        and optionally ``conditional/*``.
+    """
+    # Flatten 3-D for Wasserstein / conditional (keep original for discriminator)
+    real_2d = real.reshape(real.shape[0], -1) if real.ndim == 3 else real
+    synth_2d = (
+        synthetic.reshape(synthetic.shape[0], -1) if synthetic.ndim == 3 else synthetic
+    )
+
+    results: dict[str, Any] = {}
+
+    # Wasserstein
+    ws = compute_wasserstein_metrics(real_2d, synth_2d)
+    for k, v in ws.items():
+        results[f"wasserstein/{k}"] = v
+
+    # Discriminator
+    disc = train_discriminator(real, synthetic)
+    for k, v in disc.items():
+        results[f"discriminator/{k}"] = v
+
+    # Conditional stats (optional)
+    if real_regimes is not None and synthetic_regimes is not None:
+        cs = compute_conditional_stats(
+            real_2d, synth_2d, real_regimes, synthetic_regimes
+        )
+        for k, v in cs.items():
+            results[f"conditional/{k}"] = v
+
+    logger.info(
+        "LOB-Bench summary: WD_mean=%.4f, disc_acc=%.3f, disc_auc=%.3f",
+        results.get("wasserstein/wd_mean", float("nan")),
+        results.get("discriminator/accuracy", float("nan")),
+        results.get("discriminator/auc", float("nan")),
+    )
+
     return results
