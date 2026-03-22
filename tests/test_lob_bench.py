@@ -26,9 +26,9 @@ def _make_lob_data(
 ) -> np.ndarray:
     """Create synthetic LOB-like data with positive prices."""
     data = rng.standard_normal((n, c)).astype(np.float64)
-    # Ensure ask > bid for realistic spread (cols 0=ask, 2=bid)
+    # Ensure ask > bid for realistic spread (cols 0=ask_price_1, 20=bid_price_1)
     data[:, 0] = np.abs(data[:, 0]) + 1.0
-    data[:, 2] = data[:, 0] - np.abs(rng.standard_normal(n)) * 0.1 - 0.01
+    data[:, 20] = data[:, 0] - np.abs(rng.standard_normal(n)) * 0.1 - 0.01
     return data
 
 

@@ -33,16 +33,17 @@ _EPS = 1e-12
 
 
 def _extract_spread(data: NDArray[np.floating]) -> NDArray[np.floating]:
-    """Spread = ask_1 (col 0) - bid_1 (col 2) assuming standard 40-col LOB layout.
+    """Spread = ask_1 (col 0) - bid_1 (col 20) in grouped 40-col LOB layout.
 
-    Standard layout: [ask_price_1, ask_size_1, bid_price_1, bid_size_1, ...].
+    Grouped layout: ask_price_1..10 (0-9), ask_size_1..10 (10-19),
+    bid_price_1..10 (20-29), bid_size_1..10 (30-39).
     """
-    return data[:, 0] - data[:, 2]
+    return data[:, 0] - data[:, 20]
 
 
 def _extract_mid(data: NDArray[np.floating]) -> NDArray[np.floating]:
     """Mid-price = (ask_1 + bid_1) / 2."""
-    return (data[:, 0] + data[:, 2]) / 2.0
+    return (data[:, 0] + data[:, 20]) / 2.0
 
 
 def _extract_log_returns(data: NDArray[np.floating]) -> NDArray[np.floating]:
@@ -145,9 +146,10 @@ def compute_conditional_stats(
         r_spread = _extract_spread(r_data)
         s_spread = _extract_spread(s_data)
 
-        # Total book depth: sum of all size columns (odd indices in 40-col layout)
-        r_depth = r_data[:, 1::2].sum(axis=1)
-        s_depth = s_data[:, 1::2].sum(axis=1)
+        # Total book depth: sum of all size columns (cols 10-19 ask sizes + 30-39 bid sizes)
+        _size_cols = list(range(10, 20)) + list(range(30, 40))
+        r_depth = r_data[:, _size_cols].sum(axis=1)
+        s_depth = s_data[:, _size_cols].sum(axis=1)
 
         r_ret = _extract_log_returns(r_data)
         s_ret = _extract_log_returns(s_data)
