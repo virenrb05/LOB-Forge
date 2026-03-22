@@ -17,7 +17,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
 - [x] **Phase 5: Predictor Training** - Multi-horizon prediction, VPIN head, walk-forward eval, wandb
 - [ ] **Phase 6: Generator Core** - Conditional DDPM/DDIM, 1D U-Net with AdaLN, EMA
 - [ ] **Phase 7: Generator Validation** - Stylized facts, regime conditioning, LOB-Bench metrics
-- [ ] **Phase 8: Execution Environment** - Gymnasium LOB env, action space, cost model
+- [x] **Phase 8: Execution Environment** - Gymnasium LOB env, action space, cost model
 - [ ] **Phase 9: Execution Agent** - Double-DQN, curriculum learning, TWAP/VWAP/AC/Random baselines
 - [ ] **Phase 10: Evaluation & Polish** - IS metrics, plots, notebooks, README, test suite, train_all.sh
 
@@ -166,6 +166,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Predictor Training | 3/3 | Complete | 2026-03-20 |
 | 6. Generator Core | 5/5 | Complete | 2026-03-20 |
 | 7. Generator Validation | 5/5 | Complete | 2026-03-22 |
-| 8. Execution Environment | 0/TBD | Not started | - |
+| 8. Execution Environment | 3/3 | Complete | 2026-03-22 |
 | 9. Execution Agent | 0/TBD | Not started | - |
 | 10. Evaluation & Polish | 0/TBD | Not started | - |
