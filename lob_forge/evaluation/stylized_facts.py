@@ -13,8 +13,13 @@ LOB book arrays are expected in the 40-column layout:
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import numpy as np
 from scipy import stats
+
+if TYPE_CHECKING:
+    import matplotlib.figure
 
 __all__ = [
     "return_distribution_test",
@@ -23,6 +28,8 @@ __all__ = [
     "spread_cdf_test",
     "book_shape_test",
     "market_impact_test",
+    "run_all_stylized_tests",
+    "summary_figure",
 ]
 
 
@@ -404,3 +411,165 @@ def market_impact_test(
         "synthetic_beta": synth_beta,
         "passed": bool(passed),
     }
+
+
+# ---------------------------------------------------------------------------
+# Orchestrator
+# ---------------------------------------------------------------------------
+
+
+def _mid_price(book: np.ndarray) -> np.ndarray:
+    """Mid-price from 40-column LOB: (ask_1 + bid_1) / 2."""
+    return (book[:, 0] + book[:, 20]) / 2.0
+
+
+def run_all_stylized_tests(
+    real_book: np.ndarray,
+    synthetic_book: np.ndarray,
+) -> dict[str, dict]:
+    """Run all six stylized fact tests and return combined results.
+
+    Parameters
+    ----------
+    real_book : ndarray, shape (N, 40)
+        Real LOB book data.
+    synthetic_book : ndarray, shape (M, 40)
+        Synthetic LOB book data.
+
+    Returns
+    -------
+    dict[str, dict]
+        Keyed by test name with value being the individual test result dict.
+    """
+    real_mid = _mid_price(real_book)
+    synth_mid = _mid_price(synthetic_book)
+    real_ret = _log_returns(real_mid)
+    synth_ret = _log_returns(synth_mid)
+
+    results: dict[str, dict] = {}
+    results["return_distribution"] = return_distribution_test(real_mid, synth_mid)
+    results["volatility_clustering"] = volatility_clustering_test(real_mid, synth_mid)
+    results["bid_ask_bounce"] = bid_ask_bounce_test(real_ret, synth_ret)
+    results["spread_cdf"] = spread_cdf_test(real_book, synthetic_book)
+    results["book_shape"] = book_shape_test(real_book, synthetic_book)
+    results["market_impact"] = market_impact_test(
+        real_book, real_mid, synthetic_book, synth_mid
+    )
+
+    return results
+
+
+def summary_figure(
+    results: dict[str, dict],
+    real_book: np.ndarray,
+    synthetic_book: np.ndarray,
+) -> matplotlib.figure.Figure:
+    """Create a 2x3 summary figure comparing real and synthetic data.
+
+    Parameters
+    ----------
+    results : dict[str, dict]
+        Output of :func:`run_all_stylized_tests`.
+    real_book : ndarray, shape (N, 40)
+        Real LOB book data.
+    synthetic_book : ndarray, shape (M, 40)
+        Synthetic LOB book data.
+
+    Returns
+    -------
+    matplotlib.figure.Figure
+        Figure with 6 subplots (one per stylized fact test).
+    """
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    real_mid = _mid_price(real_book)
+    synth_mid = _mid_price(synthetic_book)
+    real_ret = _log_returns(real_mid)
+    synth_ret = _log_returns(synth_mid)
+
+    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+    fig.suptitle("Stylized Fact Validation", fontsize=14, fontweight="bold")
+
+    # 1. Return distribution
+    ax = axes[0, 0]
+    ax.hist(real_ret, bins=50, alpha=0.5, label="Real", density=True)
+    ax.hist(synth_ret, bins=50, alpha=0.5, label="Synthetic", density=True)
+    passed = results.get("return_distribution", {}).get("passed", False)
+    ax.set_title(f"Return Distribution ({'PASS' if passed else 'FAIL'})")
+    ax.legend()
+
+    # 2. Volatility clustering (ACF of absolute returns)
+    ax = axes[0, 1]
+    max_lag = 20
+    real_acf = _acf(np.abs(real_ret), max_lag)
+    synth_acf = _acf(np.abs(synth_ret), max_lag)
+    lags = np.arange(1, max_lag + 1)
+    ax.plot(lags, real_acf, "o-", label="Real")
+    ax.plot(lags, synth_acf, "s-", label="Synthetic")
+    passed = results.get("volatility_clustering", {}).get("passed", False)
+    ax.set_title(f"Volatility Clustering ({'PASS' if passed else 'FAIL'})")
+    ax.set_xlabel("Lag")
+    ax.set_ylabel("ACF(|r|)")
+    ax.legend()
+
+    # 3. Bid-ask bounce (lag-1 autocorrelation)
+    ax = axes[0, 2]
+    r = results.get("bid_ask_bounce", {})
+    labels = ["Real", "Synthetic"]
+    values = [r.get("real_lag1_acf", 0), r.get("synthetic_lag1_acf", 0)]
+    ax.bar(labels, values, color=["steelblue", "coral"])
+    ax.axhline(0, color="k", linewidth=0.5)
+    passed = r.get("passed", False)
+    ax.set_title(f"Bid-Ask Bounce ({'PASS' if passed else 'FAIL'})")
+    ax.set_ylabel("Lag-1 ACF")
+
+    # 4. Spread CDF
+    ax = axes[1, 0]
+    real_spread = real_book[:, 0] - real_book[:, 20]
+    synth_spread = synthetic_book[:, 0] - synthetic_book[:, 20]
+    ax.hist(
+        real_spread, bins=50, alpha=0.5, label="Real", density=True, cumulative=True
+    )
+    ax.hist(
+        synth_spread,
+        bins=50,
+        alpha=0.5,
+        label="Synthetic",
+        density=True,
+        cumulative=True,
+    )
+    passed = results.get("spread_cdf", {}).get("passed", False)
+    ax.set_title(f"Spread CDF ({'PASS' if passed else 'FAIL'})")
+    ax.legend()
+
+    # 5. Book shape
+    ax = axes[1, 1]
+    r = results.get("book_shape", {})
+    levels = np.arange(1, 11)
+    real_shape = r.get("real_shape", [0] * 10)
+    synth_shape = r.get("synthetic_shape", [0] * 10)
+    ax.plot(levels, real_shape, "o-", label="Real")
+    ax.plot(levels, synth_shape, "s-", label="Synthetic")
+    passed = r.get("passed", False)
+    ax.set_title(f"Book Shape ({'PASS' if passed else 'FAIL'})")
+    ax.set_xlabel("Level")
+    ax.set_ylabel("Mean Depth")
+    ax.legend()
+
+    # 6. Market impact
+    ax = axes[1, 2]
+    r = results.get("market_impact", {})
+    labels = ["Real", "Synthetic"]
+    values = [r.get("real_beta", 0), r.get("synthetic_beta", 0)]
+    ax.bar(labels, values, color=["steelblue", "coral"])
+    ax.axhline(1.0, color="k", linewidth=0.5, linestyle="--", label="Linear")
+    passed = r.get("passed", False)
+    ax.set_title(f"Market Impact ({'PASS' if passed else 'FAIL'})")
+    ax.set_ylabel("Beta (log-log slope)")
+    ax.legend()
+
+    fig.tight_layout()
+    return fig
