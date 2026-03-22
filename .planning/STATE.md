@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 9 in progress — DuelingDQN + PrioritizedReplayBuffer (09-01), baselines (09-02), and DQN training loop (09-03) complete
+**Current focus:** Phase 9 complete — DuelingDQN (09-01), baselines (09-02), training loop (09-03), and evaluation vs baselines (09-04) all done; next: Phase 10 evaluation notebooks
 
 ## Current Position
 
-Phase: 9 of 10 (Execution Agent) — IN PROGRESS
-Plan: 09-03 complete (DQN training loop)
-Status: Phase 09 in progress — 09-01 DQN architecture, 09-02 baselines (TWAP, VWAP, AC, Random), 09-03 train_agent() done; next: 09-04 evaluation vs baselines
-Last activity: 2026-03-22 — train_agent() with Double-DQN + 3-stage curriculum + checkpoint save/load
+Phase: 9 of 10 (Execution Agent) — COMPLETE
+Plan: 09-04 complete (evaluation vs baselines + finalized public API)
+Status: Phase 09 complete — 09-01 DQN, 09-02 baselines, 09-03 train_agent(), 09-04 evaluate_agent() + compare_to_baselines(); next: Phase 10
+Last activity: 2026-03-22 — evaluate_agent() + compare_to_baselines() + 13-symbol public API
 
-Progress: ████████░░ 82%
+Progress: █████████░ 90%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 34
+- Total plans completed: 35
 - Average duration: ~3.0 min
 - Total execution time: ~119 min
 
@@ -35,10 +35,10 @@ Progress: ████████░░ 82%
 | 06-generator-core | 5/5 | ~15 min | ~3.0 min |
 | 07-generator-validation | 5/5 | ~15 min | ~3.0 min |
 | 08-execution-environment | 3/3 | ~28 min | ~9.3 min |
-| 09-execution-agent | 3/? | ~24 min | ~8 min |
+| 09-execution-agent | 4/4 | ~29 min | ~7.3 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-03, 09-01, 09-02, 09-03
+- Last 5 plans: 09-01, 09-02, 09-03, 09-04
 - Trend: Steady
 
 ## Accumulated Context
@@ -142,6 +142,10 @@ Recent decisions affecting current work:
 - Checkpoint format: {stage, online_net, target_net, optimizer, epsilon, step}; saved to checkpoints/executor_{stage}.pt
 - Double-DQN: online net selects next_action=argmax(Q_online(s')), target net evaluates Q_target(s', next_action)
 - _select_device() helper: MPS > CUDA > CPU
+- evaluate_agent() seeds episodes 0..n_episodes-1; greedy policy epsilon=0 with torch.no_grad()
+- compare_to_baselines() returns dict with 5 agent entries + dqn_beats_twap bool (strict < on mean_cost)
+- VWAPBaseline instantiated with horizon=env.horizon to pre-compute correct schedule
+- ACTION_NAMES still aliased as LOBExecutionEnv.ACTION_NAMES in __init__.py (not module-level in environment.py)
 
 ### Pending Todos
 
@@ -154,5 +158,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Phase 09-03 complete — train_agent() with Double-DQN + 3-stage curriculum; smoke test passed
-Resume file: .planning/phases/09-execution-agent/09-03-SUMMARY.md
+Stopped at: Phase 09-04 complete — evaluate_agent() + compare_to_baselines() + finalized 13-symbol public API; all checks passed
+Resume file: .planning/phases/09-execution-agent/09-04-SUMMARY.md
