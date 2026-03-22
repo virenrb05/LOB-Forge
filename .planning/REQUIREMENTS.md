@@ -49,12 +49,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **EXEC-01**: Gymnasium LOBExecutionEnv (real mode + synthetic mode)
 - [x] **EXEC-02**: 7-action discrete space (wait, 3 market order sizes, 3 limit order types)
-- [ ] **EXEC-03**: Dueling Double-DQN with prioritized experience replay (from scratch, no SB3)
-- [ ] **EXEC-04**: 3-stage curriculum learning (low-vol → mixed → adversarial)
-- [ ] **EXEC-05**: TWAP baseline
-- [ ] **EXEC-06**: VWAP baseline
-- [ ] **EXEC-07**: Almgren-Chriss analytical baseline
-- [ ] **EXEC-08**: Random baseline
+- [x] **EXEC-03**: Dueling Double-DQN with prioritized experience replay (from scratch, no SB3)
+- [x] **EXEC-04**: 3-stage curriculum learning (low-vol → mixed → adversarial)
+- [x] **EXEC-05**: TWAP baseline
+- [x] **EXEC-06**: VWAP baseline
+- [x] **EXEC-07**: Almgren-Chriss analytical baseline
+- [x] **EXEC-08**: Random baseline
 - [x] **EXEC-09**: Realistic cost model (spread costs + exchange fees + market impact)
 
 ### Evaluation & Polish
@@ -148,12 +148,12 @@ Which phases cover which requirements. Updated by create-roadmap.
 | GEN-08 | Phase 7 | Complete |
 | EXEC-01 | Phase 8 | Complete |
 | EXEC-02 | Phase 8 | Complete |
-| EXEC-03 | Phase 9 | Pending |
-| EXEC-04 | Phase 9 | Pending |
-| EXEC-05 | Phase 9 | Pending |
-| EXEC-06 | Phase 9 | Pending |
-| EXEC-07 | Phase 9 | Pending |
-| EXEC-08 | Phase 9 | Pending |
+| EXEC-03 | Phase 9 | Complete |
+| EXEC-04 | Phase 9 | Complete |
+| EXEC-05 | Phase 9 | Complete |
+| EXEC-06 | Phase 9 | Complete |
+| EXEC-07 | Phase 9 | Complete |
+| EXEC-08 | Phase 9 | Complete |
 | EXEC-09 | Phase 8 | Complete |
 | EVAL-01 | Phase 10 | Pending |
 | EVAL-02 | Phase 10 | Pending |
