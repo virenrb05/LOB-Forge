@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 10 in progress — 10-01 IS metrics + backtest runner complete; 10-02 test suite (307 tests) complete; next: 10-03 notebooks
+**Current focus:** Phase 10 in progress — 10-01 IS metrics + backtest runner complete; 10-02 test suite (307 tests) complete; 10-03 notebooks complete; 10-04 README + train_all.sh complete; next: 10-05 (if any) or phase complete
 
 ## Current Position
 
 Phase: 10 of 10 (Evaluation Polish) — IN PROGRESS
-Plan: 10-02 complete (evaluation metrics tests + backtest runner tests)
-Status: 10-01 metrics/backtest/plots implemented; 10-02 test suite written (307 passed); next: 10-03
-Last activity: 2026-03-22 — test_eval_metrics.py (16 tests) + test_backtest.py (9 tests); full suite 307 passed
+Plan: 10-04 complete (README + train_all.sh)
+Status: 10-01 metrics/backtest/plots implemented; 10-02 test suite written (307 passed); 10-03 notebooks done; 10-04 README (225 lines, 7 sections, 8 BibTeX) + train_all.sh (160 lines, 6 stages, executable) done
+Last activity: 2026-03-22 — README.md + scripts/train_all.sh
 
-Progress: █████████░ 92%
+Progress: ██████████ 100%
 
 ## Performance Metrics
 
@@ -36,10 +36,10 @@ Progress: █████████░ 92%
 | 07-generator-validation | 5/5 | ~15 min | ~3.0 min |
 | 08-execution-environment | 3/3 | ~28 min | ~9.3 min |
 | 09-execution-agent | 4/4 | ~29 min | ~7.3 min |
-| 10-evaluation-polish | 2/4 | ~14 min | ~7 min |
+| 10-evaluation-polish | 4/4 | ~19 min | ~4.8 min |
 
 **Recent Trend:**
-- Last 5 plans: 09-03, 09-04, 10-01, 10-02
+- Last 5 plans: 09-04, 10-01, 10-02, 10-03, 10-04
 - Trend: Steady
 
 ## Accumulated Context
@@ -167,5 +167,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Phase 10-02 complete — test_eval_metrics.py (16 tests) + test_backtest.py (9 tests); 307 total passing
-Resume file: .planning/phases/10-evaluation-polish/10-02-SUMMARY.md
+Stopped at: Phase 10-04 complete — README.md (225 lines, 7 sections, 8 BibTeX) + scripts/train_all.sh (160 lines, 6 stages); all 4 plans of phase 10 done
+Resume file: .planning/phases/10-evaluation-polish/10-04-SUMMARY.md
