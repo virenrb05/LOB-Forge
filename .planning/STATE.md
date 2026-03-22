@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 8 of 10 (Execution Environment) — IN PROGRESS
-Plan: 08-01 complete (CostModel — spread + fee + market impact)
-Status: Phase 08 started, 08-01 done, ready for 08-02
-Last activity: 2026-03-22 — CostModel implemented via TDD, 16 tests passing
+Plan: 08-02 complete (LOBExecutionEnv — gymnasium-compliant with 7-action space)
+Status: Phase 08 started, 08-01 + 08-02 done, ready for 08-03 or Phase 09
+Last activity: 2026-03-22 — LOBExecutionEnv implemented, check_env() passing
 
-Progress: ████████░░ 78%
+Progress: ████████░░ 82%
 
 ## Performance Metrics
 
@@ -34,10 +34,10 @@ Progress: ████████░░ 78%
 | 05-predictor-training | 3/3 | ~9 min | ~3 min |
 | 06-generator-core | 5/5 | ~15 min | ~3.0 min |
 | 07-generator-validation | 5/5 | ~15 min | ~3.0 min |
-| 08-execution-environment | 1/? | ~8 min | ~8 min |
+| 08-execution-environment | 2/? | ~20 min | ~10 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-03, 07-04, 07-05, 08-01
+- Last 5 plans: 07-04, 07-05, 08-01, 08-02
 - Trend: Steady
 
 ## Accumulated Context
@@ -119,6 +119,11 @@ Recent decisions affecting current work:
 - CostModel as dataclass: fee_bps and impact_eta as constructor params; compute() returns float
 - exec_size == 0.0 early-return avoids division-by-zero in participation_rate computation
 - Plan 08-01 example fee numbers inconsistent with stated formula; formula implemented as written
+- LOBExecutionEnv takes np.ndarray directly (caller loads parquet, passes 40-col array); env is pure numpy, no torch
+- Limit orders use order_sizes fractions indexed by limit level (0/1/2) for exec_size — consistent with market order levels
+- Bernoulli fill sampling uses self.np_random.random() for reproducible episodes via reset(seed=N)
+- Observation space unbounded Box(-inf, inf) by design for z-score normalized LOB data; check_env warnings are informational only
+- _get_obs() zero-pads at episode start rather than requiring seq_len rows of prior history
 
 ### Pending Todos
 
@@ -131,5 +136,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Phase 08-01 complete — CostModel TDD, 16 tests passing
-Resume file: .planning/phases/08-execution-environment/08-01-SUMMARY.md
+Stopped at: Phase 08-02 complete — LOBExecutionEnv with 7-action space, check_env() passing
+Resume file: .planning/phases/08-execution-environment/08-02-SUMMARY.md
