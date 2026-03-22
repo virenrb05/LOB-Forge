@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 8 complete — LOBExecutionEnv with real + synthetic modes, executor public API finalized
+**Current focus:** Phase 9 in progress — DuelingDQN + PrioritizedReplayBuffer (09-01) and baselines (09-02) complete
 
 ## Current Position
 
@@ -19,9 +19,9 @@ Progress: ████████░░ 82%
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 31
+- Total plans completed: 33
 - Average duration: ~3.0 min
-- Total execution time: ~103 min
+- Total execution time: ~111 min
 
 **By Phase:**
 
@@ -38,7 +38,7 @@ Progress: ████████░░ 82%
 | 09-execution-agent | 2/? | ~16 min | ~8 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-05, 08-01, 08-02, 08-03
+- Last 5 plans: 08-02, 08-03, 09-01, 09-02
 - Trend: Steady
 
 ## Accumulated Context
@@ -132,6 +132,10 @@ Recent decisions affecting current work:
 - AlmgrenChriss action threshold uses 50% of TWAP rate (inventory/horizon/2); plan's 1% of inventory threshold was too high for default kappa≈0.003
 - VWAPBaseline lazily recomputes sinusoidal volume schedule via _ensure_horizon() when env.horizon differs from constructor horizon
 - RandomBaseline stores env reference via run_episode() override to stay environment-agnostic at construction time
+- DuelingDQN flattens 3D input (B,seq_len,40) inside forward() — callers pass raw obs tensors without reshape
+- PrioritizedReplayBuffer uses deque(maxlen=capacity) for O(1) capacity-eviction; numpy random.choice for priority-weighted sampling (sufficient for 100k buffer)
+- PER beta annealed in sample() via self._beta = min(beta_end, beta + increment); priorities updated as |td_error|+1e-6
+- DuelingDQN and PrioritizedReplayBuffer exported from lob_forge.executor.__all__ for Plan 09-03 import
 
 ### Pending Todos
 
@@ -144,5 +148,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Phase 09-02 complete — TWAP, VWAP, AlmgrenChriss, Random baselines with shared run_episode() interface
-Resume file: .planning/phases/09-execution-agent/09-02-SUMMARY.md
+Stopped at: Phase 09-01 complete — DuelingDQN + PrioritizedReplayBuffer TDD (37 tests green); 09-02 baselines also complete
+Resume file: .planning/phases/09-execution-agent/09-01-SUMMARY.md
