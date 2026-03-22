@@ -1,6 +1,17 @@
 # @package _global_
 
 executor:
+  # Environment
+  seq_len: 100            # observation window length (LOB snapshots)
+  inventory: 1000.0       # total units to execute per episode
+  horizon: 500            # max steps before truncation
+  order_sizes: [0.01, 0.05, 0.20]          # market order sizes (fraction of remaining)
+  limit_offsets_bps: [1, 5, 20]            # limit order price offsets in bps
+  avg_daily_volume: 1000000.0              # proxy ADV for impact calculation
+  cost_model:
+    fee_bps: 2.0          # exchange fee in bps
+    impact_eta: 0.1       # square-root impact coefficient
+  # Agent (existing)
   n_actions: 7
   gamma: 0.99
   lr: 5.0e-4
