@@ -1,0 +1,17 @@
+# @package _global_
+
+validation:
+  checkpoint_path: null          # Path to generator checkpoint (required)
+  data_path: null                # Path to preprocessed Parquet data (required)
+  n_samples: 1000               # Number of synthetic sequences to generate
+  seq_len: 100                   # Sequence length
+  ddim_steps: 50                # DDIM sampling steps
+  output_dir: outputs/validation # Where to save results
+  seed: 42
+  run_stylized_facts: true
+  run_lob_bench: true
+  run_regime_validation: true
+  discriminator:
+    hidden_dim: 128
+    epochs: 50
+    lr: 0.001
