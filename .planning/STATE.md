@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 6 complete — generator core fully wired and tested
+**Current focus:** Phase 7 in progress — generator validation stylized facts
 
 ## Current Position
 
-Phase: 6 of 10 (Generator Core) — COMPLETE
-Plan: 06-05 complete (config, exports, training loop, tests)
-Status: Phase 06 done, ready for next phase
-Last activity: 2026-03-21 — Generator config, exports, training loop, 27-test suite
+Phase: 7 of 10 (Generator Validation) — IN PROGRESS
+Plan: 07-01 complete (stylized fact statistical tests)
+Status: 07-01 done, continuing phase 07
+Last activity: 2026-03-22 — Six stylized fact test functions implemented
 
-Progress: ██████░░░░ 62%
+Progress: ██████░░░░ 65%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 24
+- Total plans completed: 25
 - Average duration: ~3.0 min
-- Total execution time: ~72 min
+- Total execution time: ~75 min
 
 **By Phase:**
 
@@ -34,8 +34,10 @@ Progress: ██████░░░░ 62%
 | 05-predictor-training | 3/3 | ~9 min | ~3 min |
 | 06-generator-core | 5/5 | ~15 min | ~3.0 min |
 
+| 07-generator-validation | 1/5 | ~3 min | ~3.0 min |
+
 **Recent Trend:**
-- Last 5 plans: 06-01, 06-02, 06-03, 06-04, 06-05
+- Last 5 plans: 06-02, 06-03, 06-04, 06-05, 07-01
 - Trend: Steady
 
 ## Accumulated Context
@@ -99,6 +101,10 @@ Recent decisions affecting current work:
 - No early stopping for diffusion training — loss behavior differs from classification
 - train_generator(cfg) returns Path to final checkpoint; uses DDIM 10 steps for periodic samples
 - Generator __init__.py re-exports 9 public symbols (all classes + train_generator)
+- Stylized fact test pattern: fn(real, synthetic, **kwargs) -> dict with passed key
+- 40-col LOB layout for evaluation: ask_price(0-9), ask_size(10-19), bid_price(20-29), bid_size(30-39)
+- Market impact volume proxy: sum of absolute bid-size changes across levels
+- Book shape test combines ask+bid depth per level for KS comparison
 
 ### Pending Todos
 
@@ -111,5 +117,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Phase 01 fix plan complete — lint violations resolved
-Resume file: .planning/phases/01-scaffold/01-FIX-SUMMARY.md
+Stopped at: Plan 07-01 complete — stylized fact tests implemented
+Resume file: .planning/phases/07-generator-validation/07-01-SUMMARY.md
