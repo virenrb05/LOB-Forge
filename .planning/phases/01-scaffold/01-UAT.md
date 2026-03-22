@@ -1,5 +1,5 @@
 ---
-status: complete
+status: fixed
 phase: 01-scaffold
 source: 01-01-SUMMARY.md, 01-02-SUMMARY.md
 started: 2026-03-22T10:00:00Z
@@ -49,4 +49,4 @@ skipped: 0
 ## Issues for /gsd:plan-fix
 
 - UAT-001: Black reformatting needed on 2 files, 2 ruff errors (minor) - Test 3
-  root_cause:
+  root_cause: tests/test_preprocessor.py has unsorted imports (I001) and unused `pytest` import (F401); features.py needs black formatting. Likely introduced in later phases without running linters.
