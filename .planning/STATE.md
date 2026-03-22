@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 ## Current Position
 
-Phase: 7 of 10 (Generator Validation) — COMPLETE
-Plan: 07-05 complete (E2E validation pipeline)
-Status: Phase 07 done, ready for next phase
-Last activity: 2026-03-22 — All validation suites implemented, 34 tests passing
+Phase: 8 of 10 (Execution Environment) — IN PROGRESS
+Plan: 08-01 complete (CostModel — spread + fee + market impact)
+Status: Phase 08 started, 08-01 done, ready for 08-02
+Last activity: 2026-03-22 — CostModel implemented via TDD, 16 tests passing
 
-Progress: ███████░░░ 72%
+Progress: ████████░░ 78%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 29
+- Total plans completed: 30
 - Average duration: ~3.0 min
-- Total execution time: ~87 min
+- Total execution time: ~95 min
 
 **By Phase:**
 
@@ -34,9 +34,10 @@ Progress: ███████░░░ 72%
 | 05-predictor-training | 3/3 | ~9 min | ~3 min |
 | 06-generator-core | 5/5 | ~15 min | ~3.0 min |
 | 07-generator-validation | 5/5 | ~15 min | ~3.0 min |
+| 08-execution-environment | 1/? | ~8 min | ~8 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-01, 07-02, 07-03, 07-04, 07-05
+- Last 5 plans: 07-03, 07-04, 07-05, 08-01
 - Trend: Steady
 
 ## Accumulated Context
@@ -115,6 +116,9 @@ Recent decisions affecting current work:
 - evaluation __init__.py re-exports 16 public symbols from all 4 submodules
 - validate_generator uses EMA weights from checkpoint when available (key: "ema_state_dict")
 - Per-regime generation: n_samples // 3 per regime (0, 1, 2)
+- CostModel as dataclass: fee_bps and impact_eta as constructor params; compute() returns float
+- exec_size == 0.0 early-return avoids division-by-zero in participation_rate computation
+- Plan 08-01 example fee numbers inconsistent with stated formula; formula implemented as written
 
 ### Pending Todos
 
@@ -127,5 +131,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Phase 07 complete — all validation suites verified
-Resume file: .planning/phases/07-generator-validation/VERIFICATION.md
+Stopped at: Phase 08-01 complete — CostModel TDD, 16 tests passing
+Resume file: .planning/phases/08-execution-environment/08-01-SUMMARY.md
