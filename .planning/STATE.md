@@ -9,10 +9,10 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 ## Current Position
 
-Phase: 8 of 10 (Execution Environment) — COMPLETE
-Plan: 08-03 complete (synthetic mode + public API)
-Status: Phase 08 fully done (08-01 CostModel, 08-02 LOBExecutionEnv, 08-03 synthetic mode + API); ready for Phase 09
-Last activity: 2026-03-22 — synthetic mode added, lob_forge.executor exports LOBExecutionEnv, CostModel, ACTION_NAMES
+Phase: 9 of 10 (Execution Agent) — IN PROGRESS
+Plan: 09-02 complete (execution baselines)
+Status: Phase 09 in progress — 09-01 DQN architecture (RED tests), 09-02 baselines (TWAP, VWAP, AC, Random) done; next: 09-03 DQN training loop
+Last activity: 2026-03-22 — TWAP/VWAP/AlmgrenChriss/Random baselines with run_episode() interface + 25 tests
 
 Progress: ████████░░ 82%
 
@@ -35,6 +35,7 @@ Progress: ████████░░ 82%
 | 06-generator-core | 5/5 | ~15 min | ~3.0 min |
 | 07-generator-validation | 5/5 | ~15 min | ~3.0 min |
 | 08-execution-environment | 3/3 | ~28 min | ~9.3 min |
+| 09-execution-agent | 2/? | ~16 min | ~8 min |
 
 **Recent Trend:**
 - Last 5 plans: 07-05, 08-01, 08-02, 08-03
@@ -128,6 +129,9 @@ Recent decisions affecting current work:
 - TYPE_CHECKING guard for DiffusionModel import in environment.py; lazy import torch inside reset() synthetic branch (keeps module torch-free)
 - ACTION_NAMES exposed as module-level alias in executor/__init__.py (LOBExecutionEnv.ACTION_NAMES) — single source of truth
 - Synthetic reset() always starts at self._start = self.seq_len (no randomization); generator produces exactly horizon+seq_len+10 rows
+- AlmgrenChriss action threshold uses 50% of TWAP rate (inventory/horizon/2); plan's 1% of inventory threshold was too high for default kappa≈0.003
+- VWAPBaseline lazily recomputes sinusoidal volume schedule via _ensure_horizon() when env.horizon differs from constructor horizon
+- RandomBaseline stores env reference via run_episode() override to stay environment-agnostic at construction time
 
 ### Pending Todos
 
@@ -140,5 +144,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Phase 08-03 complete — LOBExecutionEnv synthetic mode + executor public API (ACTION_NAMES, CostModel, LOBExecutionEnv)
-Resume file: .planning/phases/08-execution-environment/08-03-SUMMARY.md
+Stopped at: Phase 09-02 complete — TWAP, VWAP, AlmgrenChriss, Random baselines with shared run_episode() interface
+Resume file: .planning/phases/09-execution-agent/09-02-SUMMARY.md
