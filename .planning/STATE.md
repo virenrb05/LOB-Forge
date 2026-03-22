@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 7 in progress — generator validation regime conditioning
+**Current focus:** Phase 7 in progress — generator validation LOB-Bench metrics
 
 ## Current Position
 
 Phase: 7 of 10 (Generator Validation) — IN PROGRESS
-Plan: 07-04 complete (regime-conditioned generation validation)
-Status: 07-04 done, continuing phase 07
-Last activity: 2026-03-22 — Regime validation with KS tests and KL divergence
+Plan: 07-03 complete (LOB-Bench quantitative metrics)
+Status: 07-03 done, continuing phase 07
+Last activity: 2026-03-22 — LOB-Bench: Wasserstein, discriminator, conditional stats
 
 Progress: ██████░░░░ 68%
 
@@ -109,6 +109,9 @@ Recent decisions affecting current work:
 - KL divergence uses shared bin edges across regimes; epsilon 1e-10 for stability
 - Regime separability threshold: mean_kl > 0.1
 - Regime distinctness: KS p < 0.05 on returns for all pairs; fidelity: KS p > 0.05
+- LOB-Bench lazy-imports torch/sklearn in train_discriminator to keep scipy-only functions lightweight
+- run_lob_bench namespaces keys with / separator (wasserstein/wd_mean, discriminator/accuracy, etc.)
+- LOB spread for evaluation: col 0 (ask_1) - col 2 (bid_1) in standard 40-col layout
 
 ### Pending Todos
 
@@ -121,5 +124,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Plan 07-04 complete — regime validation implemented
-Resume file: .planning/phases/07-generator-validation/07-04-SUMMARY.md
+Stopped at: Plan 07-03 complete — LOB-Bench metrics implemented
+Resume file: .planning/phases/07-generator-validation/07-03-SUMMARY.md
