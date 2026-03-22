@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 9 complete — DuelingDQN (09-01), baselines (09-02), training loop (09-03), and evaluation vs baselines (09-04) all done; next: Phase 10 evaluation notebooks
+**Current focus:** Phase 10 in progress — 10-01 IS metrics + backtest runner complete; 10-02 test suite (307 tests) complete; next: 10-03 notebooks
 
 ## Current Position
 
-Phase: 9 of 10 (Execution Agent) — COMPLETE
-Plan: 09-04 complete (evaluation vs baselines + finalized public API)
-Status: Phase 09 complete — 09-01 DQN, 09-02 baselines, 09-03 train_agent(), 09-04 evaluate_agent() + compare_to_baselines(); next: Phase 10
-Last activity: 2026-03-22 — evaluate_agent() + compare_to_baselines() + 13-symbol public API
+Phase: 10 of 10 (Evaluation Polish) — IN PROGRESS
+Plan: 10-02 complete (evaluation metrics tests + backtest runner tests)
+Status: 10-01 metrics/backtest/plots implemented; 10-02 test suite written (307 passed); next: 10-03
+Last activity: 2026-03-22 — test_eval_metrics.py (16 tests) + test_backtest.py (9 tests); full suite 307 passed
 
-Progress: █████████░ 90%
+Progress: █████████░ 92%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 35
+- Total plans completed: 37
 - Average duration: ~3.0 min
 - Total execution time: ~119 min
 
@@ -36,9 +36,10 @@ Progress: █████████░ 90%
 | 07-generator-validation | 5/5 | ~15 min | ~3.0 min |
 | 08-execution-environment | 3/3 | ~28 min | ~9.3 min |
 | 09-execution-agent | 4/4 | ~29 min | ~7.3 min |
+| 10-evaluation-polish | 2/4 | ~14 min | ~7 min |
 
 **Recent Trend:**
-- Last 5 plans: 09-01, 09-02, 09-03, 09-04
+- Last 5 plans: 09-03, 09-04, 10-01, 10-02
 - Trend: Steady
 
 ## Accumulated Context
@@ -146,6 +147,9 @@ Recent decisions affecting current work:
 - compare_to_baselines() returns dict with 5 agent entries + dqn_beats_twap bool (strict < on mean_cost)
 - VWAPBaseline instantiated with horizon=env.horizon to pre-compute correct schedule
 - ACTION_NAMES still aliased as LOBExecutionEnv.ACTION_NAMES in __init__.py (not module-level in environment.py)
+- IS Sharpe uses ddof=0 (population std) in metrics.py; test values for [10,20,30] are std≈8.165, sharpe≈2.449
+- MockEnv pattern for executor tests: minimal class with action_space, seq_len, horizon, inventory; terminates after first step
+- test_eval_metrics.py used instead of test_metrics.py (which already contains predictor classification metric tests)
 
 ### Pending Todos
 
@@ -158,5 +162,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Phase 09-04 complete — evaluate_agent() + compare_to_baselines() + finalized 13-symbol public API; all checks passed
-Resume file: .planning/phases/09-execution-agent/09-04-SUMMARY.md
+Stopped at: Phase 10-02 complete — test_eval_metrics.py (16 tests) + test_backtest.py (9 tests); 307 total passing
+Resume file: .planning/phases/10-evaluation-polish/10-02-SUMMARY.md
