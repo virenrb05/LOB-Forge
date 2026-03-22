@@ -8,6 +8,7 @@ executor:
   order_sizes: [0.01, 0.05, 0.20]          # market order sizes (fraction of remaining)
   limit_offsets_bps: [1, 5, 20]            # limit order price offsets in bps
   avg_daily_volume: 1000000.0              # proxy ADV for impact calculation
+  data_path: null              # path to LOB parquet file for training; null = use dummy data
   cost_model:
     fee_bps: 2.0          # exchange fee in bps
     impact_eta: 0.1       # square-root impact coefficient
