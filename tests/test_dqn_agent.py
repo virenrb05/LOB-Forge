@@ -284,7 +284,6 @@ class TestPrioritizedReplayBufferUpdatePriorities:
     ):
         """After setting one transition's priority to a very large value,
         it should dominate sampling."""
-        rng = np.random.default_rng(42)
         for _ in range(50):
             t = _make_transition()
             buffer.push(*t)
