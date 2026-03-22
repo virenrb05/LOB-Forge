@@ -253,9 +253,7 @@ def compute_ofi(df: pd.DataFrame) -> pd.Series:
     return ofi
 
 
-def compute_mlofi(
-    df: pd.DataFrame, levels: int = 10, decay: float = 0.5
-) -> pd.Series:
+def compute_mlofi(df: pd.DataFrame, levels: int = 10, decay: float = 0.5) -> pd.Series:
     """Compute Multi-Level Order Flow Imbalance (MLOFI).
 
     Extends OFI across multiple book levels with exponential decay weighting.
@@ -296,7 +294,7 @@ def compute_mlofi(
         ask_indicator = (ap <= ap.shift(1)).astype(float)
 
         ofi_i = delta_bs * bid_indicator - delta_as * ask_indicator
-        weight = decay ** i
+        weight = decay**i
         mlofi = mlofi + weight * ofi_i
 
     # First row has no previous snapshot

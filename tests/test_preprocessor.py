@@ -4,14 +4,13 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-import pytest
 
 from lob_forge.data.preprocessor import rolling_zscore
-
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _make_feature_df(
     n: int,
@@ -67,9 +66,9 @@ class TestRollingZscoreUnitVariance:
         for col in cols:
             post_warmup = normed[col].iloc[window:]
             std = post_warmup.std()
-            assert 0.5 < std < 2.0, (
-                f"Std of {col} after warm-up is {std:.4f}, expected close to 1"
-            )
+            assert (
+                0.5 < std < 2.0
+            ), f"Std of {col} after warm-up is {std:.4f}, expected close to 1"
 
 
 class TestRollingZscoreCausality:
@@ -97,8 +96,10 @@ class TestRollingZscoreCausality:
         )
 
         # Rows >= 500 may differ
-        assert not normed_original["feat_a"].iloc[500:].equals(
-            normed_mutated["feat_a"].iloc[500:]
+        assert (
+            not normed_original["feat_a"]
+            .iloc[500:]
+            .equals(normed_mutated["feat_a"].iloc[500:])
         ), "Expected rows >=500 to differ after mutation"
 
 
