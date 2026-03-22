@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 10 of 10 (Evaluation Polish) — IN PROGRESS
-Plan: 10-04 complete (README + train_all.sh)
-Status: 10-01 metrics/backtest/plots implemented; 10-02 test suite written (307 passed); 10-03 notebooks done; 10-04 README (225 lines, 7 sections, 8 BibTeX) + train_all.sh (160 lines, 6 stages, executable) done
-Last activity: 2026-03-22 — README.md + scripts/train_all.sh
+Plan: 10-03 confirmed complete (notebooks re-executed and verified)
+Status: 10-01 metrics/backtest/plots implemented; 10-02 test suite written (307 passed); 10-03 notebooks (4 notebooks, all nbconvert exit 0) done; 10-04 README + train_all.sh also done
+Last activity: 2026-03-22 — notebooks/01_data_exploration.ipynb, 02_predictor_results.ipynb, 03_generator_quality.ipynb, 04_execution_backtest.ipynb
 
 Progress: ██████████ 100%
 
@@ -155,6 +155,14 @@ Recent decisions affecting current work:
 - IS Sharpe uses ddof=0 (population std) in metrics.py; test values for [10,20,30] are std≈8.165, sharpe≈2.449
 - MockEnv pattern for executor tests: minimal class with action_space, seq_len, horizon, inventory; terminates after first step
 - test_eval_metrics.py used instead of test_metrics.py (which already contains predictor classification metric tests)
+- temporal_split uses positional ratios tuple (0.7, 0.15, 0.15), not keyword args train_frac/val_frac
+- LOB_SCHEMA is pyarrow.Schema; access fields via .field(i), not .columns attribute
+- Schema column order: timestamp, mid_price, spread, bid_price_1..10, bid_size_1..10, ask_price_1..10, ask_size_1..10, trade_price, trade_size, trade_side
+- LinearBaseline/DeepLOB constructors use n_levels + features_per_level (not in_features)
+- CostModel.compute(exec_price, exec_size, mid_price, spread, avg_daily_volume) — not arrival_price/total_volume
+- validate_regime_conditioning(real_by_regime, synthetic_by_regime) requires two dicts
+- CosineNoiseSchedule.alphas_cumprod has shape (num_timesteps,) = 1000, not 1001
+- MockEnv non-zero ask/bid (100.05/99.95) needed for baseline arrival_price computation
 
 ### Pending Todos
 
@@ -167,5 +175,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Phase 10-04 complete — README.md (225 lines, 7 sections, 8 BibTeX) + scripts/train_all.sh (160 lines, 6 stages); all 4 plans of phase 10 done
-Resume file: .planning/phases/10-evaluation-polish/10-04-SUMMARY.md
+Stopped at: Plan 10-03 re-executed and confirmed — 4 notebooks (01_data_exploration, 02_predictor_results, 03_generator_quality, 04_execution_backtest) created and verified; all execute via nbconvert --execute (exit 0); 10-03-SUMMARY.md created
+Resume file: .planning/phases/10-evaluation-polish/10-03-SUMMARY.md
