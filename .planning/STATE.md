@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 7 complete — generator validation verified, ready for Phase 8
+**Current focus:** Phase 8 complete — LOBExecutionEnv with real + synthetic modes, executor public API finalized
 
 ## Current Position
 
-Phase: 8 of 10 (Execution Environment) — IN PROGRESS
-Plan: 08-02 complete (LOBExecutionEnv — gymnasium-compliant with 7-action space)
-Status: Phase 08 started, 08-01 + 08-02 done, ready for 08-03 or Phase 09
-Last activity: 2026-03-22 — LOBExecutionEnv implemented, check_env() passing
+Phase: 8 of 10 (Execution Environment) — COMPLETE
+Plan: 08-03 complete (synthetic mode + public API)
+Status: Phase 08 fully done (08-01 CostModel, 08-02 LOBExecutionEnv, 08-03 synthetic mode + API); ready for Phase 09
+Last activity: 2026-03-22 — synthetic mode added, lob_forge.executor exports LOBExecutionEnv, CostModel, ACTION_NAMES
 
 Progress: ████████░░ 82%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 30
+- Total plans completed: 31
 - Average duration: ~3.0 min
-- Total execution time: ~95 min
+- Total execution time: ~103 min
 
 **By Phase:**
 
@@ -34,10 +34,10 @@ Progress: ████████░░ 82%
 | 05-predictor-training | 3/3 | ~9 min | ~3 min |
 | 06-generator-core | 5/5 | ~15 min | ~3.0 min |
 | 07-generator-validation | 5/5 | ~15 min | ~3.0 min |
-| 08-execution-environment | 2/? | ~20 min | ~10 min |
+| 08-execution-environment | 3/3 | ~28 min | ~9.3 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-04, 07-05, 08-01, 08-02
+- Last 5 plans: 07-05, 08-01, 08-02, 08-03
 - Trend: Steady
 
 ## Accumulated Context
@@ -124,6 +124,10 @@ Recent decisions affecting current work:
 - Bernoulli fill sampling uses self.np_random.random() for reproducible episodes via reset(seed=N)
 - Observation space unbounded Box(-inf, inf) by design for z-score normalized LOB data; check_env warnings are informational only
 - _get_obs() zero-pads at episode start rather than requiring seq_len rows of prior history
+- LOBExecutionEnv mode="synthetic" generates fresh LOB data via DiffusionModel.generate() on every reset(); raises ValueError when generator=None
+- TYPE_CHECKING guard for DiffusionModel import in environment.py; lazy import torch inside reset() synthetic branch (keeps module torch-free)
+- ACTION_NAMES exposed as module-level alias in executor/__init__.py (LOBExecutionEnv.ACTION_NAMES) — single source of truth
+- Synthetic reset() always starts at self._start = self.seq_len (no randomization); generator produces exactly horizon+seq_len+10 rows
 
 ### Pending Todos
 
@@ -136,5 +140,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Phase 08-02 complete — LOBExecutionEnv with 7-action space, check_env() passing
-Resume file: .planning/phases/08-execution-environment/08-02-SUMMARY.md
+Stopped at: Phase 08-03 complete — LOBExecutionEnv synthetic mode + executor public API (ACTION_NAMES, CostModel, LOBExecutionEnv)
+Resume file: .planning/phases/08-execution-environment/08-03-SUMMARY.md
