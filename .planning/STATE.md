@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 7 in progress — generator validation stylized facts
+**Current focus:** Phase 7 in progress — generator validation regime conditioning
 
 ## Current Position
 
 Phase: 7 of 10 (Generator Validation) — IN PROGRESS
-Plan: 07-01 complete (stylized fact statistical tests)
-Status: 07-01 done, continuing phase 07
-Last activity: 2026-03-22 — Six stylized fact test functions implemented
+Plan: 07-04 complete (regime-conditioned generation validation)
+Status: 07-04 done, continuing phase 07
+Last activity: 2026-03-22 — Regime validation with KS tests and KL divergence
 
-Progress: ██████░░░░ 65%
+Progress: ██████░░░░ 68%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 25
+- Total plans completed: 28
 - Average duration: ~3.0 min
-- Total execution time: ~75 min
+- Total execution time: ~84 min
 
 **By Phase:**
 
@@ -34,10 +34,10 @@ Progress: ██████░░░░ 65%
 | 05-predictor-training | 3/3 | ~9 min | ~3 min |
 | 06-generator-core | 5/5 | ~15 min | ~3.0 min |
 
-| 07-generator-validation | 1/5 | ~3 min | ~3.0 min |
+| 07-generator-validation | 4/5 | ~12 min | ~3.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-02, 06-03, 06-04, 06-05, 07-01
+- Last 5 plans: 06-05, 07-01, 07-02, 07-03, 07-04
 - Trend: Steady
 
 ## Accumulated Context
@@ -105,6 +105,10 @@ Recent decisions affecting current work:
 - 40-col LOB layout for evaluation: ask_price(0-9), ask_size(10-19), bid_price(20-29), bid_size(30-39)
 - Market impact volume proxy: sum of absolute bid-size changes across levels
 - Book shape test combines ask+bid depth per level for KS comparison
+- Mid-price for regime validation: (col 0 + col 20) / 2 = (ask_1 + bid_1) / 2
+- KL divergence uses shared bin edges across regimes; epsilon 1e-10 for stability
+- Regime separability threshold: mean_kl > 0.1
+- Regime distinctness: KS p < 0.05 on returns for all pairs; fidelity: KS p > 0.05
 
 ### Pending Todos
 
@@ -117,5 +121,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Plan 07-01 complete — stylized fact tests implemented
-Resume file: .planning/phases/07-generator-validation/07-01-SUMMARY.md
+Stopped at: Plan 07-04 complete — regime validation implemented
+Resume file: .planning/phases/07-generator-validation/07-04-SUMMARY.md
