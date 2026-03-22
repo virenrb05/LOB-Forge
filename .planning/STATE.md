@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 7 in progress — generator validation LOB-Bench metrics
+**Current focus:** Phase 7 complete — generator validation verified, ready for Phase 8
 
 ## Current Position
 
-Phase: 7 of 10 (Generator Validation) — IN PROGRESS
-Plan: 07-03 complete (LOB-Bench quantitative metrics)
-Status: 07-03 done, continuing phase 07
-Last activity: 2026-03-22 — LOB-Bench: Wasserstein, discriminator, conditional stats
+Phase: 7 of 10 (Generator Validation) — COMPLETE
+Plan: 07-05 complete (E2E validation pipeline)
+Status: Phase 07 done, ready for next phase
+Last activity: 2026-03-22 — All validation suites implemented, 34 tests passing
 
-Progress: ██████░░░░ 68%
+Progress: ███████░░░ 72%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 28
+- Total plans completed: 29
 - Average duration: ~3.0 min
-- Total execution time: ~84 min
+- Total execution time: ~87 min
 
 **By Phase:**
 
@@ -33,11 +33,10 @@ Progress: ██████░░░░ 68%
 | 04-predictor-architecture | 4/4 | ~8 min | ~2 min |
 | 05-predictor-training | 3/3 | ~9 min | ~3 min |
 | 06-generator-core | 5/5 | ~15 min | ~3.0 min |
-
-| 07-generator-validation | 4/5 | ~12 min | ~3.0 min |
+| 07-generator-validation | 5/5 | ~15 min | ~3.0 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-05, 07-01, 07-02, 07-03, 07-04
+- Last 5 plans: 07-01, 07-02, 07-03, 07-04, 07-05
 - Trend: Steady
 
 ## Accumulated Context
@@ -105,13 +104,17 @@ Recent decisions affecting current work:
 - 40-col LOB layout for evaluation: ask_price(0-9), ask_size(10-19), bid_price(20-29), bid_size(30-39)
 - Market impact volume proxy: sum of absolute bid-size changes across levels
 - Book shape test combines ask+bid depth per level for KS comparison
-- Mid-price for regime validation: (col 0 + col 20) / 2 = (ask_1 + bid_1) / 2
+- Mid-price for evaluation: (col 0 + col 20) / 2 = (ask_1 + bid_1) / 2
 - KL divergence uses shared bin edges across regimes; epsilon 1e-10 for stability
 - Regime separability threshold: mean_kl > 0.1
 - Regime distinctness: KS p < 0.05 on returns for all pairs; fidelity: KS p > 0.05
 - LOB-Bench lazy-imports torch/sklearn in train_discriminator to keep scipy-only functions lightweight
 - run_lob_bench namespaces keys with / separator (wasserstein/wd_mean, discriminator/accuracy, etc.)
-- LOB spread for evaluation: col 0 (ask_1) - col 2 (bid_1) in standard 40-col layout
+- LOB spread uses grouped layout: col 0 (ask_1) - col 20 (bid_1); depth from cols 10-19 + 30-39
+- TYPE_CHECKING guard for matplotlib.figure import in stylized_facts.py
+- evaluation __init__.py re-exports 16 public symbols from all 4 submodules
+- validate_generator uses EMA weights from checkpoint when available (key: "ema_state_dict")
+- Per-regime generation: n_samples // 3 per regime (0, 1, 2)
 
 ### Pending Todos
 
@@ -124,5 +127,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Plan 07-03 complete — LOB-Bench metrics implemented
-Resume file: .planning/phases/07-generator-validation/07-03-SUMMARY.md
+Stopped at: Phase 07 complete — all validation suites verified
+Resume file: .planning/phases/07-generator-validation/VERIFICATION.md

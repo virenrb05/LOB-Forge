@@ -41,9 +41,9 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **GEN-03**: Conditioning on diffusion timestep + volatility regime + time-of-day
 - [x] **GEN-04**: DDPM sampling (1000-step) and DDIM sampling (50-step)
 - [x] **GEN-05**: EMA model weights
-- [ ] **GEN-06**: 7 stylized-fact validation tests (return distribution, vol clustering, bid-ask bounce, spread CDF, book shape, market impact concavity, summary figure)
-- [ ] **GEN-07**: Regime-conditioned generation (volatility, trend, liquidity regimes)
-- [ ] **GEN-08**: LOB-Bench quantitative evaluation (Wasserstein distances, discriminator scores, conditional statistics)
+- [x] **GEN-06**: 7 stylized-fact validation tests (return distribution, vol clustering, bid-ask bounce, spread CDF, book shape, market impact concavity, summary figure)
+- [x] **GEN-07**: Regime-conditioned generation (volatility, trend, liquidity regimes)
+- [x] **GEN-08**: LOB-Bench quantitative evaluation (Wasserstein distances, discriminator scores, conditional statistics)
 
 ### Executor (Module C)
 
@@ -143,9 +143,9 @@ Which phases cover which requirements. Updated by create-roadmap.
 | GEN-03 | Phase 6 | Complete |
 | GEN-04 | Phase 6 | Complete |
 | GEN-05 | Phase 6 | Complete |
-| GEN-06 | Phase 7 | Pending |
-| GEN-07 | Phase 7 | Pending |
-| GEN-08 | Phase 7 | Pending |
+| GEN-06 | Phase 7 | Complete |
+| GEN-07 | Phase 7 | Complete |
+| GEN-08 | Phase 7 | Complete |
 | EXEC-01 | Phase 8 | Pending |
 | EXEC-02 | Phase 8 | Pending |
 | EXEC-03 | Phase 9 | Pending |
