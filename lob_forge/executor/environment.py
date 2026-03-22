@@ -11,17 +11,25 @@ Action space (7 discrete actions):
 
 Observation space:
   Box(low=-inf, high=inf, shape=(seq_len, 40), dtype=float32) — sliding window of LOB snapshots
+
+Modes:
+  "real"      — use the provided lob_data array directly (default)
+  "synthetic" — generate a fresh episode of LOB data from DiffusionModel.generate() on each
+                reset(); requires generator param (a DiffusionModel instance)
 """
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import gymnasium
 import numpy as np
 from gymnasium import spaces
 
 from lob_forge.executor.cost_model import CostModel
+
+if TYPE_CHECKING:
+    from lob_forge.generator.model import DiffusionModel
 
 # Column indices in grouped LOB layout (40 columns):
 #   ask_price cols: 0-9
@@ -39,12 +47,21 @@ _LIMIT_FILL_PROBS: tuple[float, float, float] = (0.50, 0.30, 0.10)
 
 
 class LOBExecutionEnv(gymnasium.Env):
-    """Gymnasium environment for executing a liquidation task on real LOB data.
+    """Gymnasium environment for executing a liquidation task on LOB data.
+
+    Supports two modes:
+
+    * ``"real"`` — use the provided *lob_data* array directly (default).
+    * ``"synthetic"`` — generate a fresh episode of LOB data from a
+      :class:`~lob_forge.generator.model.DiffusionModel` on every ``reset()``.
+      Requires the *generator* argument.
 
     Parameters
     ----------
     lob_data : np.ndarray
-        Shape (N, 40), the full LOB sequence (40 book columns only, z-score normalised).
+        Shape (N, 40), the full LOB sequence (40 book columns only, z-score
+        normalised).  For ``mode="synthetic"`` this is used only to validate
+        the column count — the array itself is replaced on each ``reset()``.
     seq_len : int
         Number of LOB snapshots in each observation window.
     inventory : float
@@ -56,7 +73,19 @@ class LOBExecutionEnv(gymnasium.Env):
     limit_offsets_bps : tuple[float, float, float]
         Limit order price offsets in bps inside the ask for actions 4-6.
     cost_model : CostModel | None
-        Cost model instance; defaults to CostModel() if None.
+        Cost model instance; defaults to ``CostModel()`` if None.
+    mode : str
+        ``"real"`` (default) or ``"synthetic"``.
+    generator : DiffusionModel | None
+        Required when ``mode="synthetic"``; must expose a ``generate()``
+        method compatible with :class:`~lob_forge.generator.model.DiffusionModel`.
+        Duck-typed at runtime — no hard import at module level.
+    regime : int
+        Volatility regime for synthetic generation: 0=low-vol, 1=normal,
+        2=high-vol.  Ignored for ``mode="real"``.
+    device : str
+        Device string passed to the generator (e.g. ``"cpu"`` or ``"cuda"``).
+        Ignored for ``mode="real"``.
     """
 
     metadata: dict[str, Any] = {"render_modes": []}
@@ -80,11 +109,21 @@ class LOBExecutionEnv(gymnasium.Env):
         order_sizes: tuple[float, float, float] = (0.01, 0.05, 0.20),
         limit_offsets_bps: tuple[float, float, float] = (1, 5, 20),
         cost_model: CostModel | None = None,
+        mode: str = "real",
+        generator: DiffusionModel | None = None,
+        regime: int = 1,
+        device: str = "cpu",
     ) -> None:
         super().__init__()
 
         if lob_data.ndim != 2 or lob_data.shape[1] != 40:
             raise ValueError(f"lob_data must have shape (N, 40), got {lob_data.shape}")
+
+        if mode not in ("real", "synthetic"):
+            raise ValueError(f"mode must be 'real' or 'synthetic', got {mode!r}")
+
+        if mode == "synthetic" and generator is None:
+            raise ValueError("generator required for synthetic mode")
 
         self.lob_data: np.ndarray = lob_data.astype(np.float32)
         self.seq_len: int = seq_len
@@ -95,6 +134,10 @@ class LOBExecutionEnv(gymnasium.Env):
         self.cost_model: CostModel = (
             cost_model if cost_model is not None else CostModel()
         )
+        self.mode: str = mode
+        self.generator: Any = generator  # duck-typed; DiffusionModel at runtime
+        self.regime: int = regime
+        self.device: str = device
 
         # Gymnasium spaces
         self.observation_space: spaces.Box = spaces.Box(
@@ -125,6 +168,9 @@ class LOBExecutionEnv(gymnasium.Env):
     ) -> tuple[np.ndarray, dict[str, Any]]:
         """Reset the environment for a new episode.
 
+        For ``mode="synthetic"``, generates a fresh LOB sequence from the
+        diffusion model before resetting episode state.
+
         Returns
         -------
         obs : np.ndarray
@@ -133,18 +179,34 @@ class LOBExecutionEnv(gymnasium.Env):
         """
         super().reset(seed=seed)
 
-        n = len(self.lob_data)
-        min_start = self.seq_len
-        max_start = n - self.horizon - 1
+        if self.mode == "synthetic":
+            import torch  # lazy import — keep module-level torch-free
 
-        if max_start < min_start:
-            raise ValueError(
-                f"lob_data too short ({n} rows) for seq_len={self.seq_len} "
-                f"and horizon={self.horizon}. Need at least "
-                f"{self.seq_len + self.horizon + 1} rows."
-            )
+            n_steps = self.horizon + self.seq_len + 10  # buffer
+            regime_t = torch.tensor([self.regime] * 1)  # batch of 1
+            with torch.no_grad():
+                generated = self.generator.generate(
+                    n_samples=1,
+                    seq_len=n_steps,
+                    regime=regime_t.to(self.device),
+                    method="ddim",
+                )  # shape (1, n_steps, 40)
+            self.lob_data = generated[0].cpu().numpy().astype(np.float32)
+            self._start = self.seq_len
+        else:
+            n = len(self.lob_data)
+            min_start = self.seq_len
+            max_start = n - self.horizon - 1
 
-        self._start = int(self.np_random.integers(min_start, max_start + 1))
+            if max_start < min_start:
+                raise ValueError(
+                    f"lob_data too short ({n} rows) for seq_len={self.seq_len} "
+                    f"and horizon={self.horizon}. Need at least "
+                    f"{self.seq_len + self.horizon + 1} rows."
+                )
+
+            self._start = int(self.np_random.integers(min_start, max_start + 1))
+
         self._step = self._start
 
         self._remaining = self.inventory
