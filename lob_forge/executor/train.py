@@ -317,3 +317,38 @@ def train_agent(cfg: Any) -> Path:
         )
 
     return last_ckpt_path
+
+
+if __name__ == "__main__":
+    import sys
+    from pathlib import Path as _Path
+
+    from hydra import compose, initialize_config_dir
+
+    _project_root = _Path(__file__).parents[2]
+    _config_dir = str(_project_root / "configs")
+
+    _config_name = "executor"
+    for _i, _arg in enumerate(sys.argv[1:], 1):
+        if _arg == "--config-name" and _i < len(sys.argv):
+            _config_name = sys.argv[_i + 1]
+            break
+        if _arg.startswith("--config-name="):
+            _config_name = _arg.split("=", 1)[1]
+            break
+
+    with initialize_config_dir(config_dir=_config_dir, version_base=None):
+        _cfg = compose(config_name=_config_name)
+
+    # Default data_path to data/train.parquet if not set in config
+    if _cfg.executor.get("data_path", None) is None:
+        _default_data = _project_root / "data" / "train.parquet"
+        if _default_data.exists():
+            from omegaconf import OmegaConf
+
+            with OmegaConf.open_dict(_cfg):
+                _cfg.executor.data_path = str(_default_data)
+            print(f"[train_agent] Using data_path: {_default_data}")
+
+    final_ckpt = train_agent(_cfg)
+    print(f"[train_agent] Training complete. Final checkpoint: {final_ckpt}")

@@ -105,21 +105,21 @@ python -m lob_forge.data.preprocessor --config-name data
 # ---------------------------------------------------------------------------
 log_stage "Stage 3: Predictor Training (DualAttentionTransformer)"
 
-python -m lob_forge.train --config-name predictor trainer=predictor device="$DEVICE"
+python -m lob_forge.train --config-name predictor +trainer=predictor +device="$DEVICE"
 
 # ---------------------------------------------------------------------------
 # Stage 4: Train generator
 # ---------------------------------------------------------------------------
 log_stage "Stage 4: Generator Training (DDPM/DDIM)"
 
-python -m lob_forge.train --config-name generator trainer=generator device="$DEVICE"
+python -m lob_forge.train --config-name generator +trainer=generator +device="$DEVICE"
 
 # ---------------------------------------------------------------------------
 # Stage 5: Train execution agent
 # ---------------------------------------------------------------------------
 log_stage "Stage 5: Execution Agent Training (Dueling DQN)"
 
-python -m lob_forge.executor.train --config-name executor device="$DEVICE"
+python -m lob_forge.executor.train --config-name executor
 
 # ---------------------------------------------------------------------------
 # Stage 6: Evaluation
