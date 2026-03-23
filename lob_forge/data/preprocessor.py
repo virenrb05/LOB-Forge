@@ -8,6 +8,7 @@ modules (features, labels, splits).
 from __future__ import annotations
 
 import logging
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,7 @@ from lob_forge.data.features import compute_all_features
 from lob_forge.data.labels import compute_labels
 from lob_forge.data.schema import TIMESTAMP, TRADE_SIDE, read_lob_parquet
 from lob_forge.data.splits import temporal_split
+from lob_forge.data.validation import validate_lob_dataframe
 
 logger = logging.getLogger(__name__)
 
@@ -218,3 +220,81 @@ def preprocess(
         "feature_cols": feature_cols,
         "label_cols": label_cols,
     }
+
+
+if __name__ == "__main__":
+    from hydra import compose, initialize_config_dir
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        stream=sys.stdout,
+    )
+
+    # Locate configs/ directory relative to project root (two levels up from this file)
+    _project_root = Path(__file__).parents[2]
+    _config_dir = str(_project_root / "configs")
+    _data_dir = _project_root / "data"
+
+    # Determine config name from argv (--config-name <name>) or default to "data"
+    _config_name = "data"
+    for _i, _arg in enumerate(sys.argv[1:], 1):
+        if _arg == "--config-name" and _i < len(sys.argv):
+            _config_name = sys.argv[_i + 1]
+            break
+        if _arg.startswith("--config-name="):
+            _config_name = _arg.split("=", 1)[1]
+            break
+
+    with initialize_config_dir(config_dir=_config_dir, version_base=None):
+        _cfg = compose(config_name=_config_name)
+
+    # Flatten: the data YAML uses `# @package _global_` so keys live under cfg.data
+    _data_cfg = _cfg.data if hasattr(_cfg, "data") else _cfg
+
+    # Discover the most recently modified raw Parquet file in data/
+    _raw_files = sorted(
+        _data_dir.glob("*.parquet"), key=lambda p: p.stat().st_mtime, reverse=True
+    )
+    # Exclude split outputs from Stage 2 itself
+    _raw_files = [
+        p
+        for p in _raw_files
+        if p.name
+        not in (
+            "train.parquet",
+            "val.parquet",
+            "test.parquet",
+            "normalization_stats.parquet",
+        )
+    ]
+
+    if not _raw_files:
+        logger.error(
+            "No raw Parquet files found in %s. Run Stage 1 (coinbase_downloader) first.",
+            _data_dir,
+        )
+        sys.exit(1)
+
+    _input_path = _raw_files[0]
+    logger.info("Using raw input: %s", _input_path)
+
+    # Run validation on raw data before preprocessing
+    _raw_df = read_lob_parquet(_input_path)
+    _issues = validate_lob_dataframe(_raw_df)
+    if _issues:
+        for _issue in _issues:
+            logger.warning("Validation issue: %s", _issue)
+    else:
+        logger.info("Raw data validation: OK (%d rows)", len(_raw_df))
+    del _raw_df  # free memory before preprocessing
+
+    _result = preprocess(_input_path, _data_dir, _data_cfg)
+    logger.info(
+        "Preprocessing complete. Splits: train=%d, val=%d, test=%d",
+        _result["counts"].get("train", 0),
+        _result["counts"].get("val", 0),
+        _result["counts"].get("test", 0),
+    )
+    for _split_name, _split_path in _result["paths"].items():
+        logger.info("  %s -> %s", _split_name, _split_path)
