@@ -12,7 +12,7 @@
 #
 # Stages:
 #   0 - Validate environment
-#   1 - Data ingestion (Bybit download + LOBSTER adapter)
+#   1 - Data ingestion (Coinbase BTC-USD LOB recorder)
 #   2 - Preprocessing (features, labels, datasets)
 #   3 - Train predictor (DualAttentionTransformer)
 #   4 - Train generator (DDPM/DDIM diffusion model)
@@ -26,6 +26,7 @@ set -euo pipefail
 # ---------------------------------------------------------------------------
 DEVICE=${DEVICE:-mps}     # Override: DEVICE=cuda bash scripts/train_all.sh
 DATA_DIR=${DATA_DIR:-data}
+RECORD_DURATION=${RECORD_DURATION:-300}  # Override: RECORD_DURATION=60 bash scripts/train_all.sh
 
 # ---------------------------------------------------------------------------
 # Argument parsing
@@ -76,20 +77,17 @@ echo "Data directory: $DATA_DIR"
 # Stage 1: Data ingestion
 # ---------------------------------------------------------------------------
 if [ "$SKIP_DATA" = false ]; then
-  log_stage "Stage 1: Data Ingestion"
+  log_stage "Stage 1: Data Ingestion (Coinbase BTC-USD)"
 
-  # Bybit download may fail due to geo-restrictions; treat as non-fatal
-  if python -m lob_forge.data.bybit_downloader --config-name data; then
-    echo "[OK] Bybit download complete"
+  # Record 5 minutes of live LOB data from Coinbase public API (no auth required)
+  if python -m lob_forge.data.coinbase_downloader \
+      --duration "$RECORD_DURATION" \
+      --output "$DATA_DIR" \
+      --symbol BTC-USD \
+      --depth 10; then
+    echo "[OK] Coinbase LOB recording complete (${RECORD_DURATION}s)"
   else
-    echo "[WARN] Bybit download failed (geo-restriction or network issue); continuing"
-  fi
-
-  # LOBSTER adapter requires paid WRDS data; non-fatal when data absent
-  if python -m lob_forge.data.lobster_adapter --config-name data; then
-    echo "[OK] LOBSTER adapter complete"
-  else
-    echo "[WARN] LOBSTER adapter failed (WRDS data not present); continuing"
+    echo "[WARN] Coinbase recording failed; continuing with existing data if present"
   fi
 else
   echo "[SKIP] Data ingestion skipped (--skip-data)"
