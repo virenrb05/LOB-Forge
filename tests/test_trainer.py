@@ -55,7 +55,7 @@ def _create_synthetic_parquet(tmp_path: Path, n_rows: int = 500) -> tuple[Path, 
         data[f"label_h{h}"] = labels
 
     # VPIN column
-    data["vpin_50"] = rng.rand(n_rows).astype(np.float64)
+    data["vpin"] = rng.rand(n_rows).astype(np.float64)
 
     df = pd.DataFrame(data)
     train_path = tmp_path / "train.parquet"
@@ -226,7 +226,7 @@ class TestLOBDatasetVpin:
             sequence_length=20,
             horizons=[10, 20, 50, 100],
             feature_cols=BOOK_COLS,
-            vpin_col="vpin_50",
+            vpin_col="vpin",
         )
         sample = ds[0]
         assert len(sample) == 3

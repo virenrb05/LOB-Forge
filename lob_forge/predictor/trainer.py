@@ -186,8 +186,10 @@ def train_model(
     # --- Datasets ---
     horizons = list(_get(cfg, "data.horizons", [10, 20, 50, 100]))
     seq_len = _get(cfg, "data.sequence_length", 100)
-    has_vpin = isinstance(model, DualAttentionTransformer) and model.has_vpin_head
-    vpin_col = "vpin_50" if has_vpin else None
+    model_wants_vpin = (
+        isinstance(model, DualAttentionTransformer) and model.has_vpin_head
+    )
+    vpin_col = "vpin" if model_wants_vpin else None
 
     train_ds = LOBDataset(
         train_path,
@@ -203,6 +205,8 @@ def train_model(
         feature_cols=BOOK_FEATURE_COLS,
         vpin_col=vpin_col,
     )
+    # has_vpin is True only when both model has the head AND the column exists in data
+    has_vpin = model_wants_vpin and train_ds.vpin is not None
 
     batch_size = _get(cfg, "training.batch_size", 256)
     num_workers = _get(cfg, "training.num_workers", 0)
