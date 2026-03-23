@@ -1,8 +1,8 @@
 # @package _global_
 
 data:
-  symbol: BTCUSDT
-  source: bybit
+  symbol: BTC-USD
+  source: coinbase
   depth: 10  # LOB levels
   sequence_length: 100
   horizons:
