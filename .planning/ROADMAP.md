@@ -20,6 +20,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
 - [x] **Phase 8: Execution Environment** - Gymnasium LOB env, action space, cost model
 - [x] **Phase 9: Execution Agent** - Double-DQN, curriculum learning, TWAP/VWAP/AC/Random baselines
 - [x] **Phase 10: Evaluation & Polish** - IS metrics, plots, notebooks, README, test suite, train_all.sh
+- [ ] **Phase 11: Fix Generator Training Dispatch & Lint Sweep** - Fix train.py dispatch, train_all.sh Stage 4, linting sweep
 
 ## Phase Details
 
@@ -152,10 +153,23 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
 **Research**: Unlikely (internal patterns, visualization)
 **Plans**: TBD
 
+### Phase 11: Fix Generator Training Dispatch & Lint Sweep
+**Goal**: Fix broken E2E pipeline (train_all.sh Stage 4) and verify linting across full codebase
+**Depends on**: Phase 10
+**Requirements**: EVAL-06, EVAL-09
+**Gap Closure**: Closes gaps from v1 audit — EVAL-09 (Hydra dispatch), EVAL-06 (linting), train_all.sh integration gap, E2E flow gap
+**Success Criteria** (what must be TRUE):
+  1. `train.py` dispatches to generator trainer when `--config-name generator` is used
+  2. `train_all.sh` Stage 4 successfully invokes generator training (not predictor)
+  3. `black --check . && ruff check .` passes across entire codebase
+  4. Full `train_all.sh` pipeline executes all stages without dispatch errors
+**Research**: Unlikely (internal fix, existing patterns)
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -169,3 +183,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Execution Environment | 3/3 | Complete | 2026-03-22 |
 | 9. Execution Agent | 4/4 | Complete | 2026-03-22 |
 | 10. Evaluation & Polish | 4/4 | Complete | 2026-03-22 |
+| 11. Fix Generator Dispatch & Lint | 0/0 | Planned | — |
