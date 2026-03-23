@@ -141,14 +141,14 @@ class TestComputeSlippageVsTwap:
 
     def test_multiple_episodes_mean(self) -> None:
         """Slippage uses mean across episodes."""
-        agent = [_make_result(8.0), _make_result(12.0)]   # mean = 10
-        twap = [_make_result(10.0), _make_result(10.0)]   # mean = 10
+        agent = [_make_result(8.0), _make_result(12.0)]  # mean = 10
+        twap = [_make_result(10.0), _make_result(10.0)]  # mean = 10
         slippage = compute_slippage_vs_twap(agent, twap)
         assert slippage == pytest.approx(0.0)
 
     def test_negative_is_better(self) -> None:
         """Negative slippage means agent outperforms TWAP."""
-        agent = [_make_result(c) for c in [6.0, 7.0, 8.0]]   # mean = 7
+        agent = [_make_result(c) for c in [6.0, 7.0, 8.0]]  # mean = 7
         twap = [_make_result(10.0)]
         slippage = compute_slippage_vs_twap(agent, twap)
         assert slippage < 0.0

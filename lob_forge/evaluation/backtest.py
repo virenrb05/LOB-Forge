@@ -8,7 +8,7 @@ returns a list of :class:`~lob_forge.executor.baselines.ExecutionResult`.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from lob_forge.executor.baselines import BaselineAgent, ExecutionResult
 
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 
 def run_backtest(
     env: LOBExecutionEnv,
-    agent: Union[BaselineAgent, str, Path],
+    agent: BaselineAgent | str | Path,
     n_episodes: int = 10,
     seed_offset: int = 0,
 ) -> list[ExecutionResult]:
@@ -101,9 +101,7 @@ def run_backtest(
                         break
 
                 executed = env.inventory - info["remaining"]
-                exec_vwap = arrival_price + (
-                    info["episode_cost"] / max(executed, 1e-9)
-                )
+                exec_vwap = arrival_price + (info["episode_cost"] / max(executed, 1e-9))
                 is_shortfall = (exec_vwap - arrival_price) * env.inventory
                 results.append(
                     ExecutionResult(
@@ -123,9 +121,7 @@ def run_backtest(
             f"got {type(agent).__name__}"
         )
 
-    return [
-        agent.run_episode(env, seed=seed_offset + i) for i in range(n_episodes)
-    ]
+    return [agent.run_episode(env, seed=seed_offset + i) for i in range(n_episodes)]
 
 
 __all__ = ["run_backtest"]
