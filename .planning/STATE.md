@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 ## Current Position
 
-Phase: 10 of 10 (Evaluation & Polish) — COMPLETE
-Plan: 10-04 complete (README + train_all.sh)
-Status: ALL PHASES DONE — 10-01 metrics/backtest/plots; 10-02 307 tests passing; 10-03 4 notebooks (nbconvert exit 0); 10-04 225-line README + executable train_all.sh; verification passed
-Last activity: 2026-03-22 — Phase 10 execution complete; all 6 must-haves verified
+Phase: 11 (Fix Dispatch + Lint) — IN PROGRESS
+Plan: 11-01 complete (generator dispatch fix)
+Status: 11-01 done — OmegaConf.select dispatch in train.py; train_all.sh Stage 4 verified; all 4 verification checks pass
+Last activity: 2026-03-22 — Phase 11-01 execution complete; dispatch logic added to lob_forge/train.py
 
-Progress: ██████████ 100%
+Progress: ██████████ 100% (core pipeline) + phase 11 gap-closure in progress
 
 ## Performance Metrics
 
@@ -147,6 +147,8 @@ Recent decisions affecting current work:
 - compare_to_baselines() returns dict with 5 agent entries + dqn_beats_twap bool (strict < on mean_cost)
 - VWAPBaseline instantiated with horizon=env.horizon to pre-compute correct schedule
 - ACTION_NAMES still aliased as LOBExecutionEnv.ACTION_NAMES in __init__.py (not module-level in environment.py)
+- train.py dispatch uses OmegaConf.select(cfg, "trainer", default="predictor") — trainer is a CLI-only override key, never in config.yaml; direct cfg.trainer raises KeyError in struct mode
+- train_generator imported lazily inside trainer=generator branch to avoid unconditional diffusion/torch imports on predictor training path
 - compute_implementation_shortfall sets slippage_vs_twap=NaN; caller fills via compute_slippage_vs_twap(agent, twap)
 - run_backtest lazy-imports torch only for DQN checkpoint branch; delegates to evaluate_agent() when seed_offset==0
 - training_loss_curve plot emits a placeholder when checkpoints/training_log.csv is absent (safe for CI)
@@ -166,7 +168,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+- Phase 11-02: lint/type fix plan (pending execution)
 
 ### Blockers/Concerns
 
@@ -175,5 +177,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Plan 10-03 re-executed and confirmed — 4 notebooks (01_data_exploration, 02_predictor_results, 03_generator_quality, 04_execution_backtest) created and verified; all execute via nbconvert --execute (exit 0); 10-03-SUMMARY.md created
-Resume file: .planning/phases/10-evaluation-polish/10-03-SUMMARY.md
+Stopped at: Plan 11-01 complete — OmegaConf.select dispatch added to lob_forge/train.py; trainer=generator routes to train_generator(cfg); train_all.sh Stage 4 verified already correct; all verification checks pass
+Resume file: .planning/phases/11-fix-dispatch-lint/11-01-SUMMARY.md
