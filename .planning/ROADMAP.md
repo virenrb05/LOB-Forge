@@ -21,6 +21,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
 - [x] **Phase 9: Execution Agent** - Double-DQN, curriculum learning, TWAP/VWAP/AC/Random baselines
 - [x] **Phase 10: Evaluation & Polish** - IS metrics, plots, notebooks, README, test suite, train_all.sh
 - [x] **Phase 11: Fix Generator Training Dispatch & Lint Sweep** - Fix train.py dispatch, train_all.sh Stage 4, linting sweep
+- [~] **Phase 12: Coinbase Data & Full Pipeline Run** - Coinbase downloader, record BTC-USD LOB data, full training pipeline, real metrics with wandb (plans 12-01 and 12-02 complete)
 
 ## Phase Details
 
@@ -166,10 +167,24 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
 **Research**: Unlikely (internal fix, existing patterns)
 **Plans**: TBD
 
+### Phase 12: Coinbase Data & Full Pipeline Run
+**Goal**: Add Coinbase public API downloader, record real BTC-USD 10-level LOB data, run full training pipeline with real data, produce real metrics with wandb logging
+**Depends on**: Phase 11
+**Requirements**: DATA-01 (adapted to Coinbase), DATA-03
+**Success Criteria** (what must be TRUE):
+  1. Coinbase downloader fetches 10-level BTC-USD LOB snapshots via REST and records via WebSocket
+  2. Recorded data conforms to unified Parquet schema and passes validation
+  3. Full pipeline (predictor → generator → executor) trains on real Coinbase data
+  4. Real metrics (F1, IS, slippage) logged to wandb
+  5. `train_all.sh` runs end-to-end with Coinbase data
+**Research**: Likely (Coinbase WebSocket API specifics, rate limits)
+**Research topics**: Coinbase Exchange API v2 order book endpoints, WebSocket feed subscription format, snapshot vs L2update delta handling
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -184,3 +199,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 9. Execution Agent | 4/4 | Complete | 2026-03-22 |
 | 10. Evaluation & Polish | 4/4 | Complete | 2026-03-22 |
 | 11. Fix Generator Dispatch & Lint | 2/2 | Complete | 2026-03-22 |
+| 12. Coinbase Data & Pipeline Run | 2/N | In Progress | 2026-03-22 |

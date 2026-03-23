@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 12 in progress — CoinbaseDownloader implemented (12-01 complete); REST snapshot + WebSocket recorder done; 307 tests passing
+**Current focus:** Phase 12 in progress — CoinbaseDownloader implemented and wired into pipeline (12-01 and 12-02 complete); full pipeline uses Coinbase BTC-USD data; 307 tests passing
 
 ## Current Position
 
 Phase: 12 (Coinbase Data & Full Pipeline Run) — IN PROGRESS
-Plan: 12-01 complete (coinbase-downloader-class)
-Status: 12-01 done — CoinbaseDownloader class in downloader.py; fetch_snapshot() returns (1,46) DataFrame; exported from lob_forge.data; ruff + black clean; 307 tests pass
-Last activity: 2026-03-22 — Phase 12-01 execution complete; CoinbaseDownloader implemented with Exchange REST API and Advanced Trade WebSocket
+Plan: 12-02 complete (coinbase-pipeline-integration)
+Status: 12-02 done — coinbase_downloader CLI module created; configs/data.yaml source=coinbase symbol=BTC-USD; train_all.sh Stage 1 uses Coinbase downloader; human checkpoint verified REST + WebSocket; 307 tests pass
+Last activity: 2026-03-22 — Phase 12-02 execution complete; pipeline wired end-to-end with Coinbase BTC-USD data
 
-Progress: ██████████░ ~91% — Phase 12 in progress (plan 01 of N complete)
+Progress: ██████████░ ~93% — Phase 12 in progress (plans 01-02 of N complete)
 
 ## Performance Metrics
 
@@ -175,7 +175,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- None — Phase 12-01 complete; next: remaining 12-xx plans (record real data, full pipeline run)
+- None — Phase 12-02 complete; next: remaining 12-xx plans (full pipeline run with real Coinbase data, wandb metrics)
 
 ### Blockers/Concerns
 
@@ -185,5 +185,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Plan 12-01 complete — CoinbaseDownloader implemented; REST uses api.exchange.coinbase.com (public, no auth); WebSocket uses advanced-trade-ws.coinbase.com with max_size=10MB; 307 tests pass; ruff + black clean
-Resume file: .planning/phases/12-coinbase-data-pipeline-run/12-01-SUMMARY.md
+Stopped at: Plan 12-02 complete — CoinbaseDownloader wired into pipeline; coinbase_downloader CLI created; configs/data.yaml updated; train_all.sh Stage 1 uses Coinbase; 307 tests pass; ruff + black clean
+Resume file: .planning/phases/12-coinbase-data-pipeline-run/12-02-SUMMARY.md
