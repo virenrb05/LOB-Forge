@@ -466,3 +466,347 @@ class BybitDownloader:
         write_lob_parquet(df, part_path)
         flushed_paths.append(part_path)
         logger.debug("Flushed %d rows to %s", len(buffer), part_path)
+
+
+# ---------------------------------------------------------------------------
+# CoinbaseDownloader
+# ---------------------------------------------------------------------------
+
+
+class CoinbaseDownloader:
+    """Fetch and record LOB data from Coinbase Advanced Trade API.
+
+    Uses the public (no-auth) Coinbase REST and WebSocket endpoints for
+    BTC-USD level-2 order book data.
+
+    Parameters
+    ----------
+    symbol : str
+        Trading pair symbol in Coinbase format (default ``"BTC-USD"``).
+    depth : int
+        Number of order book levels to keep (default 10).
+    output_dir : str | Path
+        Base directory for saved Parquet files (default ``"data/"``).
+    """
+
+    REST_BASE: str = "https://api.exchange.coinbase.com/products"
+    WS_URL: str = "wss://advanced-trade-ws.coinbase.com"
+
+    def __init__(
+        self,
+        symbol: str = "BTC-USD",
+        depth: int = 10,
+        output_dir: str | Path = "data/",
+    ) -> None:
+        self.symbol = symbol
+        self.depth = depth
+        self.output_dir = Path(output_dir)
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+
+    # ------------------------------------------------------------------
+    # Method 1: REST snapshot
+    # ------------------------------------------------------------------
+
+    def fetch_snapshot(self) -> pd.DataFrame:
+        """Fetch current order book snapshot via Coinbase REST API.
+
+        Returns
+        -------
+        pd.DataFrame
+            Single-row DataFrame conforming to the unified LOB schema.
+        """
+        url = f"{self.REST_BASE}/{self.symbol}/book"
+        params = {"level": "2"}
+        resp = _retry_get(url, params=params)
+        data = resp.json()
+
+        bids = data.get("bids", [])
+        asks = data.get("asks", [])
+        time_str = data.get("time", "")
+
+        # Take top depth levels (pre-sorted: bids desc, asks asc)
+        bids = bids[: self.depth]
+        asks = asks[: self.depth]
+
+        if len(bids) < self.depth or len(asks) < self.depth:
+            raise ValueError(
+                f"Insufficient book depth: got {len(bids)} bids, {len(asks)} asks, "
+                f"need {self.depth}"
+            )
+
+        # Convert ISO timestamp to microseconds since epoch
+        if time_str:
+            ts_us = int(
+                datetime.fromisoformat(time_str.replace("Z", "+00:00")).timestamp()
+                * 1_000_000
+            )
+        else:
+            ts_us = int(time.time() * 1_000_000)
+
+        row: dict = {}
+        row[TIMESTAMP] = ts_us
+
+        # Bids: each entry is [price_str, size_str, num_orders_int]
+        for i in range(self.depth):
+            row[BID_PRICE_COLS[i]] = float(bids[i][0])
+            row[BID_SIZE_COLS[i]] = float(bids[i][1])
+
+        # Asks: each entry is [price_str, size_str, num_orders_int]
+        for i in range(self.depth):
+            row[ASK_PRICE_COLS[i]] = float(asks[i][0])
+            row[ASK_SIZE_COLS[i]] = float(asks[i][1])
+
+        # Derived fields
+        row[MID_PRICE] = (row[BID_PRICE_COLS[0]] + row[ASK_PRICE_COLS[0]]) / 2
+        row[SPREAD] = row[ASK_PRICE_COLS[0]] - row[BID_PRICE_COLS[0]]
+
+        # Trade fields: not available from orderbook endpoint
+        row[TRADE_PRICE] = np.nan
+        row[TRADE_SIZE] = np.nan
+        row[TRADE_SIDE] = 0
+
+        df = pd.DataFrame([row], columns=ALL_COLUMNS)
+        return df
+
+    # ------------------------------------------------------------------
+    # Method 2: WebSocket LOB recorder
+    # ------------------------------------------------------------------
+
+    def record_websocket(
+        self,
+        duration_seconds: int = 60,
+        output_path: Path | None = None,
+        flush_every: int = 1000,
+    ) -> Path:
+        """Record live LOB snapshots via Coinbase WebSocket.
+
+        Connects to Coinbase Advanced Trade WebSocket, subscribes to the
+        level2 channel, and records each snapshot/update as a row in the
+        unified LOB schema.
+
+        Parameters
+        ----------
+        duration_seconds : int
+            How long to record (seconds).
+        output_path : Path | None
+            Explicit output file path. If ``None``, auto-generates based on
+            symbol and current time.
+        flush_every : int
+            Flush buffer to Parquet every N rows (default 1000).
+
+        Returns
+        -------
+        Path
+            Path to the output Parquet file.
+        """
+        if output_path is None:
+            now_str = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+            output_path = self.output_dir / f"{self.symbol}_{now_str}.parquet"
+        output_path = Path(output_path)
+
+        return asyncio.run(self._ws_record(duration_seconds, output_path, flush_every))
+
+    async def _ws_record(
+        self,
+        duration_seconds: int,
+        output_path: Path,
+        flush_every: int,
+    ) -> Path:
+        """Internal async WebSocket recording loop for Coinbase level2."""
+        import websockets
+
+        # Book state: {price_str: size_float}
+        bid_book: dict[str, float] = {}
+        ask_book: dict[str, float] = {}
+        buffer: list[dict] = []
+        all_flushed_paths: list[Path] = []
+        flush_count = 0
+
+        end_time = time.monotonic() + duration_seconds
+
+        async def _connect_and_record() -> None:
+            nonlocal bid_book, ask_book, buffer, flush_count
+
+            async for ws in websockets.connect(
+                self.WS_URL,
+                ping_interval=20,
+                ping_timeout=10,
+                close_timeout=5,
+                max_size=10 * 1024 * 1024,  # 10 MB — Coinbase snapshots can be large
+            ):
+                try:
+                    # Subscribe to level2 channel (Advanced Trade protocol)
+                    sub_msg = json.dumps(
+                        {
+                            "type": "subscribe",
+                            "product_ids": [self.symbol],
+                            "channel": "level2",
+                        }
+                    )
+                    await ws.send(sub_msg)
+
+                    while time.monotonic() < end_time:
+                        try:
+                            raw = await asyncio.wait_for(
+                                ws.recv(),
+                                timeout=min(5.0, end_time - time.monotonic()),
+                            )
+                        except asyncio.TimeoutError:
+                            continue
+
+                        msg = json.loads(raw)
+
+                        # Only process l2_data messages; skip heartbeats etc.
+                        if msg.get("channel") != "l2_data":
+                            continue
+
+                        events = msg.get("events", [])
+                        if not events:
+                            continue
+
+                        for event in events:
+                            event_type = event.get("type", "")
+                            updates = event.get("updates", [])
+
+                            # Timestamp from event_time (ISO string) or fallback
+                            event_time_str = event.get("event_time", "")
+                            if event_time_str:
+                                ts_us = int(
+                                    datetime.fromisoformat(
+                                        event_time_str.replace("Z", "+00:00")
+                                    ).timestamp()
+                                    * 1_000_000
+                                )
+                            else:
+                                ts_us = int(time.time() * 1_000_000)
+
+                            if event_type == "snapshot":
+                                bid_book.clear()
+                                ask_book.clear()
+                                for upd in updates:
+                                    price = upd["price_level"]
+                                    qty = upd["new_quantity"]
+                                    side = upd["side"]
+                                    qty_f = float(qty)
+                                    if side == "bid":
+                                        if qty_f > 0:
+                                            bid_book[price] = qty_f
+                                    else:  # "offer"
+                                        if qty_f > 0:
+                                            ask_book[price] = qty_f
+
+                            elif event_type == "update":
+                                for upd in updates:
+                                    price = upd["price_level"]
+                                    qty = upd["new_quantity"]
+                                    side = upd["side"]
+                                    qty_f = float(qty)
+                                    if side == "bid":
+                                        if qty_f == 0:
+                                            bid_book.pop(price, None)
+                                        else:
+                                            bid_book[price] = qty_f
+                                    else:  # "offer"
+                                        if qty_f == 0:
+                                            ask_book.pop(price, None)
+                                        else:
+                                            ask_book[price] = qty_f
+                            else:
+                                continue
+
+                            # Build snapshot row from current book state
+                            row = self._book_to_row(bid_book, ask_book, ts_us)
+                            if row is not None:
+                                buffer.append(row)
+
+                            # Flush if buffer full
+                            if len(buffer) >= flush_every:
+                                self._flush_buffer(
+                                    buffer,
+                                    output_path,
+                                    flush_count,
+                                    all_flushed_paths,
+                                )
+                                flush_count += 1
+                                buffer.clear()
+
+                    # Duration reached, exit connection loop
+                    break
+
+                except websockets.ConnectionClosed:
+                    logger.warning("Coinbase WebSocket disconnected, reconnecting...")
+                    continue
+
+        await _connect_and_record()
+
+        # Flush remaining buffer
+        if buffer:
+            self._flush_buffer(buffer, output_path, flush_count, all_flushed_paths)
+            buffer.clear()
+
+        # Merge all flushed parts into single output file
+        if all_flushed_paths:
+            dfs = [pd.read_parquet(p) for p in all_flushed_paths]
+            merged = pd.concat(dfs, ignore_index=True)
+            write_lob_parquet(merged, output_path)
+            # Clean up temp files
+            for p in all_flushed_paths:
+                if p != output_path:
+                    p.unlink(missing_ok=True)
+        elif not output_path.exists():
+            raise RuntimeError("No data recorded during Coinbase WebSocket session")
+
+        logger.info("Recorded %s to %s", self.symbol, output_path)
+        return output_path
+
+    def _book_to_row(
+        self,
+        bid_book: dict[str, float],
+        ask_book: dict[str, float],
+        ts_us: int,
+    ) -> dict | None:
+        """Convert current book state to a schema-conforming row dict.
+
+        Parameters
+        ----------
+        ts_us : int
+            Timestamp already in microseconds (not milliseconds).
+        """
+        # Sort bids descending, asks ascending
+        sorted_bids = sorted(bid_book.items(), key=lambda x: float(x[0]), reverse=True)
+        sorted_asks = sorted(ask_book.items(), key=lambda x: float(x[0]))
+
+        if len(sorted_bids) < self.depth or len(sorted_asks) < self.depth:
+            return None
+
+        row: dict = {}
+        row[TIMESTAMP] = ts_us  # already in microseconds
+
+        for i in range(self.depth):
+            row[BID_PRICE_COLS[i]] = float(sorted_bids[i][0])
+            row[BID_SIZE_COLS[i]] = float(sorted_bids[i][1])
+            row[ASK_PRICE_COLS[i]] = float(sorted_asks[i][0])
+            row[ASK_SIZE_COLS[i]] = float(sorted_asks[i][1])
+
+        row[MID_PRICE] = (row[BID_PRICE_COLS[0]] + row[ASK_PRICE_COLS[0]]) / 2
+        row[SPREAD] = row[ASK_PRICE_COLS[0]] - row[BID_PRICE_COLS[0]]
+
+        row[TRADE_PRICE] = np.nan
+        row[TRADE_SIZE] = np.nan
+        row[TRADE_SIDE] = 0
+
+        return row
+
+    def _flush_buffer(
+        self,
+        buffer: list[dict],
+        output_path: Path,
+        flush_count: int,
+        flushed_paths: list[Path],
+    ) -> None:
+        """Write buffer to a temporary Parquet file."""
+        df = pd.DataFrame(buffer, columns=ALL_COLUMNS)
+        part_path = output_path.with_suffix(f".part{flush_count}.parquet")
+        write_lob_parquet(df, part_path)
+        flushed_paths.append(part_path)
+        logger.debug("Flushed %d rows to %s", len(buffer), part_path)
