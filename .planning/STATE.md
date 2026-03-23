@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** ALL PHASES COMPLETE — Phase 10 verified; 10-01 IS metrics + plots, 10-02 307-test suite, 10-03 4 notebooks, 10-04 README + train_all.sh; full pipeline reproducible
+**Current focus:** ALL 11 PHASES COMPLETE — Phase 11 verified; train.py dispatches correctly to generator, train_all.sh Stage 4 fixed, black + ruff pass (0 errors), 307 tests passing
 
 ## Current Position
 
@@ -14,7 +14,7 @@ Plan: 11-02 complete (lint sweep)
 Status: 11-02 done — ruff + black both pass cleanly (0 errors, 0 reformats); 307 tests pass; notebooks/ excluded from ruff
 Last activity: 2026-03-22 — Phase 11-02 execution complete; all lint violations fixed; phase 11 fully complete
 
-Progress: ██████████ 100% (core pipeline) + phase 11 gap-closure in progress
+Progress: ██████████ 100% — ALL 11 PHASES COMPLETE
 
 ## Performance Metrics
 

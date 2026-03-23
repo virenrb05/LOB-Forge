@@ -20,7 +20,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
 - [x] **Phase 8: Execution Environment** - Gymnasium LOB env, action space, cost model
 - [x] **Phase 9: Execution Agent** - Double-DQN, curriculum learning, TWAP/VWAP/AC/Random baselines
 - [x] **Phase 10: Evaluation & Polish** - IS metrics, plots, notebooks, README, test suite, train_all.sh
-- [ ] **Phase 11: Fix Generator Training Dispatch & Lint Sweep** - Fix train.py dispatch, train_all.sh Stage 4, linting sweep
+- [x] **Phase 11: Fix Generator Training Dispatch & Lint Sweep** - Fix train.py dispatch, train_all.sh Stage 4, linting sweep
 
 ## Phase Details
 
@@ -183,4 +183,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Execution Environment | 3/3 | Complete | 2026-03-22 |
 | 9. Execution Agent | 4/4 | Complete | 2026-03-22 |
 | 10. Evaluation & Polish | 4/4 | Complete | 2026-03-22 |
-| 11. Fix Generator Dispatch & Lint | 0/0 | Planned | — |
+| 11. Fix Generator Dispatch & Lint | 2/2 | Complete | 2026-03-22 |
