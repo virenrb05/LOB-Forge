@@ -19,11 +19,30 @@ log = logging.getLogger(__name__)
 def main(cfg: DictConfig) -> None:
     """Run the LOB-Forge training pipeline.
 
-    Dispatches to the predictor training loop with resolved Hydra config.
+    Dispatches to the predictor or generator trainer based on the ``trainer``
+    config key.  Pass ``trainer=generator`` on the CLI to route to the
+    diffusion model training loop; the default (or ``trainer=predictor``)
+    routes to the predictor training loop.
+
     Invoked via ``python -m lob_forge.train`` with optional config overrides.
     """
     log.info("Resolved config:\n%s", OmegaConf.to_yaml(cfg, resolve=True))
 
+    # Determine which trainer to dispatch to.
+    # ``trainer`` is NOT defined in config.yaml — it is passed exclusively as a
+    # CLI override (e.g. trainer=generator), so use OmegaConf.select with a
+    # default to avoid KeyError.
+    trainer_key = OmegaConf.select(cfg, "trainer", default="predictor")
+    log.info("Dispatcher: trainer=%s", trainer_key)
+
+    if trainer_key == "generator":
+        from lob_forge.generator.train import train_generator  # noqa: PLC0415
+
+        log.info("Routing to generator trainer (train_generator)")
+        train_generator(cfg)
+        return
+
+    # --- Predictor path (default) ---
     # Resolve output directory (Hydra changes cwd to its output dir)
     output_dir = Path(os.getcwd())
     log.info("Output directory: %s", output_dir)
