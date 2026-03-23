@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 12 (Coinbase Data & Full Pipeline Run) — IN PROGRESS
-Plan: 12-02 complete (coinbase-pipeline-integration)
-Status: 12-02 done — coinbase_downloader CLI module created; configs/data.yaml source=coinbase symbol=BTC-USD; train_all.sh Stage 1 uses Coinbase downloader; human checkpoint verified REST + WebSocket; 307 tests pass
-Last activity: 2026-03-22 — Phase 12-02 execution complete; pipeline wired end-to-end with Coinbase BTC-USD data
+Plan: 12-03 complete (wandb IS/slippage logging)
+Status: 12-03 done — wandb IS/slippage logging added to train_all.sh Stage 6; executor/is_mean, executor/is_std, executor/is_sharpe, executor/slippage_vs_twap, executor/dqn_beats_twap logged; non-fatal on missing checkpoint or wandb failure; 307 tests pass
+Last activity: 2026-03-22 — Phase 12-03 execution complete; Phase 12 success criterion 4 met (IS and slippage logged to wandb)
 
 Progress: ██████████░ ~93% — Phase 12 in progress (plans 01-02 of N complete)
 
@@ -185,5 +185,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Plan 12-02 complete — CoinbaseDownloader wired into pipeline; coinbase_downloader CLI created; configs/data.yaml updated; train_all.sh Stage 1 uses Coinbase; 307 tests pass; ruff + black clean
-Resume file: .planning/phases/12-coinbase-data-pipeline-run/12-02-SUMMARY.md
+Stopped at: Plan 12-03 complete — wandb IS/slippage logging added to train_all.sh Stage 6; Phase 12 success criterion 4 met; 307 tests pass; ruff + black clean
+Resume file: .planning/phases/12-coinbase-data-pipeline-run/12-03-SUMMARY.md
