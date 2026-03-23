@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** ALL 11 PHASES COMPLETE — Phase 11 verified; train.py dispatches correctly to generator, train_all.sh Stage 4 fixed, black + ruff pass (0 errors), 307 tests passing
+**Current focus:** Phase 12 in progress — CoinbaseDownloader implemented (12-01 complete); REST snapshot + WebSocket recorder done; 307 tests passing
 
 ## Current Position
 
-Phase: 11 (Fix Dispatch + Lint) — COMPLETE
-Plan: 11-02 complete (lint sweep)
-Status: 11-02 done — ruff + black both pass cleanly (0 errors, 0 reformats); 307 tests pass; notebooks/ excluded from ruff
-Last activity: 2026-03-22 — Phase 11-02 execution complete; all lint violations fixed; phase 11 fully complete
+Phase: 12 (Coinbase Data & Full Pipeline Run) — IN PROGRESS
+Plan: 12-01 complete (coinbase-downloader-class)
+Status: 12-01 done — CoinbaseDownloader class in downloader.py; fetch_snapshot() returns (1,46) DataFrame; exported from lob_forge.data; ruff + black clean; 307 tests pass
+Last activity: 2026-03-22 — Phase 12-01 execution complete; CoinbaseDownloader implemented with Exchange REST API and Advanced Trade WebSocket
 
-Progress: ██████████ 100% — ALL 11 PHASES COMPLETE
+Progress: ██████████░ ~91% — Phase 12 in progress (plan 01 of N complete)
 
 ## Performance Metrics
 
@@ -150,6 +150,8 @@ Recent decisions affecting current work:
 - train.py dispatch uses OmegaConf.select(cfg, "trainer", default="predictor") — trainer is a CLI-only override key, never in config.yaml; direct cfg.trainer raises KeyError in struct mode
 - train_generator imported lazily inside trainer=generator branch to avoid unconditional diffusion/torch imports on predictor training path
 - notebooks/ excluded from ruff via pyproject.toml [tool.ruff] exclude directive — E402 in notebook cells is a false positive (mid-notebook imports are idiomatic)
+- CoinbaseDownloader REST_BASE uses api.exchange.coinbase.com (public, no auth); api.coinbase.com/v3/brokerage requires JWT — Exchange API returns identical [price, size, num_orders] format with "time" field
+- CoinbaseDownloader WS uses wss://advanced-trade-ws.coinbase.com with max_size=10MB (default 1MB limit causes 1009 on large snapshots); protocol: channel="level2", messages have channel="l2_data", events[].type in ("snapshot","update"), updates[].side in ("bid","offer")
 - compute_implementation_shortfall sets slippage_vs_twap=NaN; caller fills via compute_slippage_vs_twap(agent, twap)
 - run_backtest lazy-imports torch only for DQN checkpoint branch; delegates to evaluate_agent() when seed_offset==0
 - training_loss_curve plot emits a placeholder when checkpoints/training_log.csv is absent (safe for CI)
@@ -167,16 +169,21 @@ Recent decisions affecting current work:
 - CosineNoiseSchedule.alphas_cumprod has shape (num_timesteps,) = 1000, not 1001
 - MockEnv non-zero ask/bid (100.05/99.95) needed for baseline arrival_price computation
 
+### Roadmap Evolution
+
+- Phase 12 added: Coinbase Data & Full Pipeline Run — Coinbase public API downloader (REST + WebSocket), record BTC-USD LOB data, full training pipeline with real data, real metrics with wandb
+
 ### Pending Todos
 
-- None — Phase 11 complete (11-01 dispatch fix, 11-02 lint sweep both done)
+- None — Phase 12-01 complete; next: remaining 12-xx plans (record real data, full pipeline run)
 
 ### Blockers/Concerns
 
-- Bybit REST API returns 403 from some network locations (geo-restriction); does not affect code correctness
+- Bybit REST API returns 403 from US (geo-restriction) — pivoted to Coinbase Exchange public API (api.exchange.coinbase.com) — works without auth
+- User has WRDS access but LOBSTER not available in their subscription
 
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Plan 11-02 complete — ruff + black pass cleanly (0 errors); 34 ruff errors and 2 black violations auto-fixed; notebooks/ excluded from ruff; 307 tests pass; phase 11 fully complete
-Resume file: .planning/phases/11-fix-dispatch-lint/11-02-SUMMARY.md
+Stopped at: Plan 12-01 complete — CoinbaseDownloader implemented; REST uses api.exchange.coinbase.com (public, no auth); WebSocket uses advanced-trade-ws.coinbase.com with max_size=10MB; 307 tests pass; ruff + black clean
+Resume file: .planning/phases/12-coinbase-data-pipeline-run/12-01-SUMMARY.md
