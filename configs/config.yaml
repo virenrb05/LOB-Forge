@@ -11,7 +11,7 @@ project:
   device: auto  # auto-detects MPS/CUDA/CPU
 
 training:
-  epochs: 50
+  epochs: 3
   batch_size: 256
   gradient_accumulation: 2
   early_stopping_patience: 10
@@ -19,4 +19,4 @@ training:
 
 wandb:
   project: lob-forge
-  enabled: true
+  enabled: false

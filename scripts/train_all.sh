@@ -119,7 +119,24 @@ python -m lob_forge.train --config-name generator +trainer=generator +device="$D
 # ---------------------------------------------------------------------------
 log_stage "Stage 5: Execution Agent Training (Dueling DQN)"
 
-python -m lob_forge.executor.train --config-name executor
+python - <<'PYEOF'
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parents[1] if "__file__" in dir() else Path.cwd()))
+import os
+from hydra import compose, initialize_config_dir
+from lob_forge.executor.train import train_agent, STAGE_CONFIG
+
+config_dir = str(Path.cwd() / "configs")
+with initialize_config_dir(config_dir=config_dir, version_base=None):
+    cfg = compose(config_name="executor")
+
+if os.environ.get("SMOKE_TEST"):
+    for stage in STAGE_CONFIG:
+        STAGE_CONFIG[stage]["steps"] = 500
+
+train_agent(cfg)
+PYEOF
 
 # ---------------------------------------------------------------------------
 # Stage 6: Evaluation
