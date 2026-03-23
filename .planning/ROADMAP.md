@@ -19,7 +19,7 @@ LOB-Forge builds an end-to-end market microstructure ML pipeline in dependency o
 - [ ] **Phase 7: Generator Validation** - Stylized facts, regime conditioning, LOB-Bench metrics
 - [x] **Phase 8: Execution Environment** - Gymnasium LOB env, action space, cost model
 - [x] **Phase 9: Execution Agent** - Double-DQN, curriculum learning, TWAP/VWAP/AC/Random baselines
-- [ ] **Phase 10: Evaluation & Polish** - IS metrics, plots, notebooks, README, test suite, train_all.sh
+- [x] **Phase 10: Evaluation & Polish** - IS metrics, plots, notebooks, README, test suite, train_all.sh
 
 ## Phase Details
 
@@ -168,4 +168,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Generator Validation | 5/5 | Complete | 2026-03-22 |
 | 8. Execution Environment | 3/3 | Complete | 2026-03-22 |
 | 9. Execution Agent | 4/4 | Complete | 2026-03-22 |
-| 10. Evaluation & Polish | 0/TBD | Not started | - |
+| 10. Evaluation & Polish | 4/4 | Complete | 2026-03-22 |

@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** The three-component pipeline works end-to-end: transformer embeddings condition the diffusion model, which generates unlimited training environments for the RL agent that beats TWAP on real data.
-**Current focus:** Phase 10 in progress — 10-01 IS metrics + backtest runner complete; 10-02 test suite (307 tests) complete; 10-03 notebooks complete; 10-04 README + train_all.sh complete; next: 10-05 (if any) or phase complete
+**Current focus:** ALL PHASES COMPLETE — Phase 10 verified; 10-01 IS metrics + plots, 10-02 307-test suite, 10-03 4 notebooks, 10-04 README + train_all.sh; full pipeline reproducible
 
 ## Current Position
 
-Phase: 10 of 10 (Evaluation Polish) — IN PROGRESS
-Plan: 10-03 confirmed complete (notebooks re-executed and verified)
-Status: 10-01 metrics/backtest/plots implemented; 10-02 test suite written (307 passed); 10-03 notebooks (4 notebooks, all nbconvert exit 0) done; 10-04 README + train_all.sh also done
-Last activity: 2026-03-22 — notebooks/01_data_exploration.ipynb, 02_predictor_results.ipynb, 03_generator_quality.ipynb, 04_execution_backtest.ipynb
+Phase: 10 of 10 (Evaluation & Polish) — COMPLETE
+Plan: 10-04 complete (README + train_all.sh)
+Status: ALL PHASES DONE — 10-01 metrics/backtest/plots; 10-02 307 tests passing; 10-03 4 notebooks (nbconvert exit 0); 10-04 225-line README + executable train_all.sh; verification passed
+Last activity: 2026-03-22 — Phase 10 execution complete; all 6 must-haves verified
 
 Progress: ██████████ 100%
 

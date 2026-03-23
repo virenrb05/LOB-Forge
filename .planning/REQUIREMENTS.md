@@ -59,13 +59,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Evaluation & Polish
 
-- [ ] **EVAL-01**: Implementation shortfall metrics, IS Sharpe, slippage vs TWAP
-- [ ] **EVAL-02**: 6 publication-ready visualization plots
-- [ ] **EVAL-03**: 4 Jupyter notebooks (data exploration, predictor results, generator quality, execution backtest)
-- [ ] **EVAL-04**: Comprehensive README with architecture diagram, results tables, citations
-- [ ] **EVAL-05**: Full test suite with meaningful coverage
+- [x] **EVAL-01**: Implementation shortfall metrics, IS Sharpe, slippage vs TWAP
+- [x] **EVAL-02**: 6 publication-ready visualization plots
+- [x] **EVAL-03**: 4 Jupyter notebooks (data exploration, predictor results, generator quality, execution backtest)
+- [x] **EVAL-04**: Comprehensive README with architecture diagram, results tables, citations
+- [x] **EVAL-05**: Full test suite with meaningful coverage
 - [ ] **EVAL-06**: Linting (black + ruff) passing across entire codebase
-- [ ] **EVAL-07**: train_all.sh script (single-command reproducible pipeline)
+- [x] **EVAL-07**: train_all.sh script (single-command reproducible pipeline)
 - [ ] **EVAL-08**: Type hints throughout all modules
 - [ ] **EVAL-09**: Hydra/OmegaConf hierarchical config management
 
@@ -155,13 +155,13 @@ Which phases cover which requirements. Updated by create-roadmap.
 | EXEC-07 | Phase 9 | Complete |
 | EXEC-08 | Phase 9 | Complete |
 | EXEC-09 | Phase 8 | Complete |
-| EVAL-01 | Phase 10 | Pending |
-| EVAL-02 | Phase 10 | Pending |
-| EVAL-03 | Phase 10 | Pending |
-| EVAL-04 | Phase 10 | Pending |
-| EVAL-05 | Phase 10 | Pending |
+| EVAL-01 | Phase 10 | Complete |
+| EVAL-02 | Phase 10 | Complete |
+| EVAL-03 | Phase 10 | Complete |
+| EVAL-04 | Phase 10 | Complete |
+| EVAL-05 | Phase 10 | Complete |
 | EVAL-06 | Phase 1 | Complete |
-| EVAL-07 | Phase 10 | Pending |
+| EVAL-07 | Phase 10 | Complete |
 | EVAL-08 | Phase 1 | Complete |
 | EVAL-09 | Phase 1 | Complete |
 
