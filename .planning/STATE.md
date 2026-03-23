@@ -9,10 +9,10 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 
 ## Current Position
 
-Phase: 11 (Fix Dispatch + Lint) — IN PROGRESS
-Plan: 11-01 complete (generator dispatch fix)
-Status: 11-01 done — OmegaConf.select dispatch in train.py; train_all.sh Stage 4 verified; all 4 verification checks pass
-Last activity: 2026-03-22 — Phase 11-01 execution complete; dispatch logic added to lob_forge/train.py
+Phase: 11 (Fix Dispatch + Lint) — COMPLETE
+Plan: 11-02 complete (lint sweep)
+Status: 11-02 done — ruff + black both pass cleanly (0 errors, 0 reformats); 307 tests pass; notebooks/ excluded from ruff
+Last activity: 2026-03-22 — Phase 11-02 execution complete; all lint violations fixed; phase 11 fully complete
 
 Progress: ██████████ 100% (core pipeline) + phase 11 gap-closure in progress
 
@@ -149,6 +149,7 @@ Recent decisions affecting current work:
 - ACTION_NAMES still aliased as LOBExecutionEnv.ACTION_NAMES in __init__.py (not module-level in environment.py)
 - train.py dispatch uses OmegaConf.select(cfg, "trainer", default="predictor") — trainer is a CLI-only override key, never in config.yaml; direct cfg.trainer raises KeyError in struct mode
 - train_generator imported lazily inside trainer=generator branch to avoid unconditional diffusion/torch imports on predictor training path
+- notebooks/ excluded from ruff via pyproject.toml [tool.ruff] exclude directive — E402 in notebook cells is a false positive (mid-notebook imports are idiomatic)
 - compute_implementation_shortfall sets slippage_vs_twap=NaN; caller fills via compute_slippage_vs_twap(agent, twap)
 - run_backtest lazy-imports torch only for DQN checkpoint branch; delegates to evaluate_agent() when seed_offset==0
 - training_loss_curve plot emits a placeholder when checkpoints/training_log.csv is absent (safe for CI)
@@ -168,7 +169,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- Phase 11-02: lint/type fix plan (pending execution)
+- None — Phase 11 complete (11-01 dispatch fix, 11-02 lint sweep both done)
 
 ### Blockers/Concerns
 
@@ -177,5 +178,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-03-22
-Stopped at: Plan 11-01 complete — OmegaConf.select dispatch added to lob_forge/train.py; trainer=generator routes to train_generator(cfg); train_all.sh Stage 4 verified already correct; all verification checks pass
-Resume file: .planning/phases/11-fix-dispatch-lint/11-01-SUMMARY.md
+Stopped at: Plan 11-02 complete — ruff + black pass cleanly (0 errors); 34 ruff errors and 2 black violations auto-fixed; notebooks/ excluded from ruff; 307 tests pass; phase 11 fully complete
+Resume file: .planning/phases/11-fix-dispatch-lint/11-02-SUMMARY.md
