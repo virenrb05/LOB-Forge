@@ -1,7 +1,7 @@
 """Data ingestion, preprocessing, and dataset construction for LOB data."""
 
 from lob_forge.data.dataset import LOBDataset, LOBSequenceDataset
-from lob_forge.data.downloader import BybitDownloader
+from lob_forge.data.downloader import BybitDownloader, CoinbaseDownloader
 from lob_forge.data.features import (
     compute_all_features,
     compute_depth_imbalance,
@@ -26,6 +26,7 @@ from lob_forge.data.validation import compute_quality_metrics, validate_lob_data
 __all__ = [
     "ALL_COLUMNS",
     "BybitDownloader",
+    "CoinbaseDownloader",
     "LOB_SCHEMA",
     "LOBDataset",
     "LOBSequenceDataset",
