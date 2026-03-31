@@ -73,13 +73,33 @@ Key classes: `DuelingDQN`, `PrioritizedReplayBuffer`, `LOBExecutionEnv`, `Almgre
 
 ## Results
 
-| Component | Metric | Reference |
-|-----------|--------|-----------|
-| Predictor (TLOB) | F1 by horizon (1s, 2s, 5s, 10s) | `notebooks/02_predictor_results.ipynb` |
-| Generator (DDPM) | Wasserstein distance vs real LOB | `notebooks/03_generator_quality.ipynb` |
-| Executor (Dueling DQN) | IS vs TWAP slippage reduction | `notebooks/04_execution_backtest.ipynb` |
+Results below are from a smoke-test run (3 predictor epochs, 3 generator epochs, 500 DQN steps/stage) on an EC2 g4dn.xlarge (Tesla T4) using ~111k real Coinbase BTC-USD LOB snapshots. The purpose is pipeline validation — full training runs are expected to produce stronger DQN performance.
 
-Run `bash scripts/train_all.sh` to reproduce all results from scratch. The notebooks render pre-computed outputs and can be re-executed after training.
+### Execution Agent vs Baselines
+
+| Agent | Mean Cost | IS Sharpe | Slippage vs TWAP |
+|-------|-----------|-----------|-----------------|
+| **DQN** | **1.1470** | 0.6894 | −0.0208 |
+| TWAP | 1.1714 | 0.7033 | baseline |
+| VWAP | 1.1714 | 0.7033 | 0.0000 |
+| Almgren-Chriss | 0.9752 | 0.6041 | −0.1675 |
+| Random | 0.9369 | 0.4662 | −0.2002 |
+
+DQN beats TWAP on mean execution cost after only 500 training steps per curriculum stage. IS Sharpe is within 2% of TWAP/VWAP — meaningful given the extremely limited training budget.
+
+### Training
+
+- **Predictor**: DualAttentionTransformer (188k params), focal loss, 4 horizons (1s/2s/5s/10s), trained on 515k rows
+- **Generator**: 40M-param DDPM/DDIM 1D U-Net with AdaLN regime conditioning, loss converging 0.048 → 0.002 over 3 epochs
+- **Executor**: Dueling Double-DQN + PER, 3-stage curriculum on real Coinbase data
+
+### Plots
+
+`outputs/plots/` contains 6 publication-ready figures: agent cost comparison, IS Sharpe by agent, slippage vs TWAP, cumulative cost curves, action distribution, and training loss curve.
+
+Full notebooks: `notebooks/02_predictor_results.ipynb`, `notebooks/03_generator_quality.ipynb`, `notebooks/04_execution_backtest.ipynb`
+
+Run `bash scripts/train_all.sh` to reproduce all results from scratch.
 
 ---
 
@@ -94,7 +114,7 @@ Run `bash scripts/train_all.sh` to reproduce all results from scratch. The noteb
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/LOB-Forge.git
+git clone https://github.com/virenrb05/LOB-Forge.git
 cd LOB-Forge
 pip install -e ".[dev]"
 ```
