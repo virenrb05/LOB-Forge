@@ -105,14 +105,22 @@ python -m lob_forge.data.preprocessor --config-name data
 # ---------------------------------------------------------------------------
 log_stage "Stage 3: Predictor Training (DualAttentionTransformer)"
 
-python -m lob_forge.train --config-name predictor +trainer=predictor +device="$DEVICE"
+if [ "${SMOKE_TEST:-}" = "1" ]; then
+  python -m lob_forge.train --config-name predictor +trainer=predictor +device="$DEVICE" ++training.epochs=3 ++training.early_stopping_patience=3
+else
+  python -m lob_forge.train --config-name predictor +trainer=predictor +device="$DEVICE"
+fi
 
 # ---------------------------------------------------------------------------
 # Stage 4: Train generator
 # ---------------------------------------------------------------------------
 log_stage "Stage 4: Generator Training (DDPM/DDIM)"
 
-python -m lob_forge.train --config-name generator +trainer=generator +device="$DEVICE"
+if [ "${SMOKE_TEST:-}" = "1" ]; then
+  python -m lob_forge.train --config-name generator +trainer=generator +device="$DEVICE" ++generator.training.epochs=3
+else
+  python -m lob_forge.train --config-name generator +trainer=generator +device="$DEVICE"
+fi
 
 # ---------------------------------------------------------------------------
 # Stage 5: Train execution agent
@@ -121,9 +129,9 @@ log_stage "Stage 5: Execution Agent Training (Dueling DQN)"
 
 python - <<'PYEOF'
 import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parents[1] if "__file__" in dir() else Path.cwd()))
 import os
+from pathlib import Path
+sys.path.insert(0, str(Path.cwd()))
 from hydra import compose, initialize_config_dir
 from lob_forge.executor.train import train_agent, STAGE_CONFIG
 
@@ -160,19 +168,12 @@ from lob_forge.evaluation.metrics import (
 )
 
 # ------------------------------------------------------------------
-# Plot generation
+# Run baseline comparison first (needed for plots and metrics)
 # ------------------------------------------------------------------
-plots = generate_all_plots()
-print(f"Generated {len(plots)} plots:")
-for p in plots:
-    print(f"  {p}")
-
-# ------------------------------------------------------------------
-# IS / slippage logging to wandb
-# ------------------------------------------------------------------
+cmp = None
 ckpt_path = Path("checkpoints/executor_adversarial.pt")
 if not ckpt_path.exists():
-    print(f"[WARN] Checkpoint not found: {ckpt_path} — skipping wandb IS/slippage logging")
+    print(f"[WARN] Checkpoint not found: {ckpt_path} — skipping comparison and wandb logging")
 else:
     # Load LOB data for eval env (test > train > dummy fallback)
     lob_data = None
@@ -202,9 +203,11 @@ else:
 
     eval_env = LOBExecutionEnv(
         lob_data=lob_data,
-        seq_len=50,
-        inventory=100.0,
-        horizon=20,
+        seq_len=100,
+        inventory=1000.0,
+        horizon=500,
+        lambda_hold=0.01,
+        lambda_terminal=1.0,
     )
 
     # Run comparison
@@ -238,6 +241,17 @@ else:
         print("[OK] IS/slippage metrics logged to wandb (executor-eval)")
     except Exception as exc:
         print(f"[WARN] wandb logging failed (non-fatal): {exc}")
+
+# ------------------------------------------------------------------
+# Plot generation (requires comparison results)
+# ------------------------------------------------------------------
+if cmp is not None:
+    plots = generate_all_plots(cmp)
+    print(f"Generated {len(plots)} plots:")
+    for p in plots:
+        print(f"  {p}")
+else:
+    print("[WARN] Skipping plot generation — no comparison data available")
 
 print("")
 print("Evaluation complete.")
