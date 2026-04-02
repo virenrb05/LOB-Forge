@@ -85,7 +85,7 @@ Results from a full production run on EC2 g4dn.xlarge (Tesla T4) using 12 hours 
 | Almgren-Chriss | 0.9601 | 0.9601 | — |
 | Random | 0.9374 | 0.9374 | — |
 
-DQN beats TWAP by **8.7% on mean execution cost** and achieves the best IS Sharpe (1.02) of any agent. DQN loss converged to ~1.5e-5 by end of adversarial stage.
+DQN beats TWAP by **8.7% on mean execution cost** with competitive IS Sharpe (1.02 vs 1.04 for TWAP). DQN loss converged to ~1.5e-5 by end of adversarial stage.
 
 ### Training
 
